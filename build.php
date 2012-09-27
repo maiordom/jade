@@ -4,13 +4,6 @@ $base_dir     = "js/src/";
 $file_name    = "js/datepicker.js";
 $file_content = "";
 
-function viewInclude( $fileName )
-{
-    ob_start();
-    include $fileName;
-    return ob_get_clean();
-}
-
 $files = Array( "core.js", "daypicker.js", "monthpicker.js", "yearpicker.js", "fn.js" );
 
 for ( $i = 0, $ilen = count( $files ); $i < $ilen; $i++ )
