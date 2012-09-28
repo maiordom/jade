@@ -41,8 +41,8 @@ Jade.MonthPicker =
         self.nodes.months_table.delegate( "." + this._month_item_selected, "click", function()
         {
             self.setCalendarState( "days" );
+            self.displayDaysWidgetItems();
         });
-
     },
 
     onYearsNavByMonthState: function()
@@ -52,14 +52,14 @@ Jade.MonthPicker =
         self.nodes.parent.delegate( self._nav_left_by_months, "click", function()
         {
             self.setYearByOffset( -1 );
-            self.displayDaysWidgetItems();
+            self.showDate();
             self.nodes.handler.focus();
         });
 
         self.nodes.parent.delegate( self._nav_right_by_months, "click", function()
         {
             self.setYearByOffset( 1 );
-            self.displayDaysWidgetItems();
+            self.showDate();
             self.nodes.handler.focus();
         });
     },
