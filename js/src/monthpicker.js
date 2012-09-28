@@ -37,6 +37,12 @@ Jade.MonthPicker =
             self.setMonthByNumber( month_number );
             self.displayDaysWidgetItems();
         });
+
+        self.nodes.months_table.delegate( ".b-datepicker-months__month_selected", "click", function()
+        {
+            self.setCalendarState( "days" );
+        });
+
     },
 
     onYearsNavByMonthState: function()

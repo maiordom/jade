@@ -18,8 +18,10 @@ Jade.YearPicker =
 
         self.nodes.year_curr.click( function()
         {
+            self.years_interval.offset = 0;
+            self.setYearsInterval( 0 );
             self.setCalendarState( "years" );
-            self.displayYearsWidgetItems( self.getFirstDateYear() );
+            self.displayYearsWidgetItems();
         });
     },
 
@@ -35,6 +37,12 @@ Jade.YearPicker =
             self.setCalendarState( "days" );
             self.displayDaysWidgetItems();
         });
+
+        self.nodes.years_table.delegate( ".b-datepicker-years__year_selected", "click", function()
+        {
+            self.setCalendarState( "days" );
+            self.showDate();
+        });
     },
 
     onYearsNavByYearsState: function()
@@ -43,35 +51,42 @@ Jade.YearPicker =
 
         self.nodes.parent.delegate( self.nav_left_by_years, "click", function()
         {
-            self.setYearByOffset( -1 );
-            self.displayYearsWidgetItems( self.getSelectedDateYear() );
+            self.setYearsInterval( -1 );
+            self.displayYearsWidgetItems();
             self.nodes.handler.focus();
         });
 
         self.nodes.parent.delegate( self.nav_right_by_years, "click", function()
         {
-            self.setYearByOffset( 1 );
-            self.displayYearsWidgetItems( self.getSelectedDateYear() );
+            self.setYearsInterval( 1 );
+            self.displayYearsWidgetItems();
             self.nodes.handler.focus();
         });
     },
 
-    displayYearsWidgetItems: function( year )
+    setYearsInterval: function( offset )
     {
-        this.setYearsItems();
-        this.clearActiveYear();
-        this.setYearItemActive( year );
+        this.years_interval.offset += offset;
+        this.years_interval.left    = this.getFirstDateYear() - 9  + 20 * this.years_interval.offset,
+        this.years_interval.right   = this.getFirstDateYear() + 10 + 20 * this.years_interval.offset;
+    },
+
+    displayYearsWidgetItems: function()
+    {
         this.showYearsInterval();
+        this.clearActiveYear();
+        this.setYearsItems();
+        this.setYearItemActive( this.getFirstDateYear() );
     },
 
     showYearsInterval: function()
     {
-        this.nodes.year_curr.text( ( this.getFirstDateYear() - 9 ) + "-" + ( this.getFirstDateYear() +  10 ) );
+        this.nodes.year_curr.text( this.years_interval.left + "-" + this.years_interval.right );
     },
 
-    setYearsItems: function()
+    setYearsItems: function( offset )
     {
-        var year = this.getFirstDateYear() - 9;
+        var year = this.years_interval.left;
 
         for ( var i = 0, ilen = this.nodes.years_items.length; i < ilen; i++ )
         {
@@ -85,6 +100,7 @@ Jade.YearPicker =
     {
         $( this.nodes.today ).before( this.years_tmpl );
 
+        this.years_interval = { left: null, right: null, offset: 0 };
         this.nodes.years_item_active = $();
         this.nodes.years_table = this.nodes.calendar.find( ".b-datepicker-years" );
         this.nodes.years_items = this.nodes.calendar.find( ".b-datepicker-years__year" );
@@ -101,8 +117,8 @@ Jade.YearPicker =
     clearActiveYear: function()
     {
         this.nodes.years_item_active
-            .addClass( "b-datepicker-years__year" )
-            .removeClass( "b-datepicker-years__year_selected" );
+            .removeClass( "b-datepicker-years__year_selected" )
+            .addClass( "b-datepicker-years__year" );
     },
 
     years_tmpl: (function()

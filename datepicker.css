@@ -111,7 +111,7 @@
                     border: 1px solid #8d4500 !important;
                     background: #fbc694;
                     color: #d96a00 !important;
-                    cursor: default;
+                    cursor: pointer;
                     }
 
         .b-datepicker-today {

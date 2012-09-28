@@ -86,6 +86,11 @@ Jade.DayPicker =
             self.setSelectedDate( day.text() );
             self.nodes.handler.val( self.getSelectedDate( day.text() ) );
         });
+
+        self.nodes.calendar.delegate( ".b-datepicker-days__day_selected", "click", function( e )
+        {
+            self.hide();
+        });
     },
 
     onIconClick: function()
