@@ -10,7 +10,7 @@ Jade.DayPicker =
             calendar = parent.find( ".b-datepicker__calendar" ),
             icon     = parent.find( ".b-datepicker__icon" );
 
-        calendar.css( "top", parent.height() + 2 );
+        calendar.css( "top", parent.outerHeight() );
         handler.attr( "data-datepicker-init", "true" );
 
         this.nodes =
@@ -79,7 +79,7 @@ Jade.DayPicker =
     {
         var self = this;
 
-        self.nodes.calendar.delegate( ".b-datepicker-days__day", "click", function( e )
+        self.nodes.calendar.delegate( "." + this._day_item, "click", function( e )
         {
             var day = $( this );
             self.hide();
@@ -87,7 +87,7 @@ Jade.DayPicker =
             self.nodes.handler.val( self.getSelectedDate( day.text() ) );
         });
 
-        self.nodes.calendar.delegate( ".b-datepicker-days__day_selected", "click", function( e )
+        self.nodes.calendar.delegate( "." + this._day_item_selected, "click", function( e )
         {
             self.hide();
         });
@@ -149,14 +149,14 @@ Jade.DayPicker =
     {
         var self = this;
 
-        self.nodes.parent.delegate( self.nav_left_by_days, "click", function()
+        self.nodes.parent.delegate( self._nav_left_by_days, "click", function()
         {
             self.setMonthByOffset( -1 );
             self.displayDaysWidgetItems();
             self.nodes.handler.focus();
         });
 
-        self.nodes.parent.delegate( self.nav_right_by_days, "click", function()
+        self.nodes.parent.delegate( self._nav_right_by_days, "click", function()
         {
             self.setMonthByOffset( 1 );
             self.displayDaysWidgetItems();
@@ -180,12 +180,12 @@ Jade.DayPicker =
              this.selected_date.getTime() <= this.last_date.getTime() )
         {
             this.nodes.calendar
-                .find( ".b-datepicker-days__day_selected" )
-                .attr( "class", "b-datepicker-days__day" );
+                .find( "." + this._day_item_selected )
+                .attr( "class", this._day_item );
 
             this.nodes.day_cells_obj
                 .eq( this.prev_offset + this.selected_date.getDate() )
-                .attr( "class", "b-datepicker-days__day_selected" );
+                .attr( "class", this._day_item_selected );
         }
     },
 

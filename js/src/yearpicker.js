@@ -29,7 +29,7 @@ Jade.YearPicker =
     {
         var self = this;
 
-        self.nodes.years_table.delegate( ".b-datepicker-years__year", "click", function()
+        self.nodes.years_table.delegate( "." + this._year_item, "click", function()
         {
             var year = $( this ).attr( "data-year" );
 
@@ -38,7 +38,7 @@ Jade.YearPicker =
             self.displayDaysWidgetItems();
         });
 
-        self.nodes.years_table.delegate( ".b-datepicker-years__year_selected", "click", function()
+        self.nodes.years_table.delegate( "." + this._year_item_selected, "click", function()
         {
             self.setCalendarState( "days" );
             self.showDate();
@@ -49,14 +49,14 @@ Jade.YearPicker =
     {
         var self = this;
 
-        self.nodes.parent.delegate( self.nav_left_by_years, "click", function()
+        self.nodes.parent.delegate( self._nav_left_by_years, "click", function()
         {
             self.setYearsInterval( -1 );
             self.displayYearsWidgetItems();
             self.nodes.handler.focus();
         });
 
-        self.nodes.parent.delegate( self.nav_right_by_years, "click", function()
+        self.nodes.parent.delegate( self._nav_right_by_years, "click", function()
         {
             self.setYearsInterval( 1 );
             self.displayYearsWidgetItems();
@@ -110,15 +110,15 @@ Jade.YearPicker =
     {
         this.nodes.years_item_active = this.nodes.years_items
             .filter( "[data-year='" + number + "']" )
-            .removeClass( "b-datepicker-years__year" )
-            .addClass( "b-datepicker-years__year_selected" );
+            .removeClass( this._year_item )
+            .addClass( this._year_item_selected );
     },
 
     clearActiveYear: function()
     {
         this.nodes.years_item_active
-            .removeClass( "b-datepicker-years__year_selected" )
-            .addClass( "b-datepicker-years__year" );
+            .removeClass( this._year_item_selected )
+            .addClass( this._year_item );
     },
 
     years_tmpl: (function()

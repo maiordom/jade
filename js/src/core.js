@@ -16,12 +16,18 @@ Jade.DatePicker = function( handler, settings )
  */
 Jade.Core =
 {
-    nav_left_by_days:    ".b-datepicker__calendar_days .b-datepicker-nav__icon-left",
-    nav_right_by_days:   ".b-datepicker__calendar_days .b-datepicker-nav__icon-right",
-    nav_left_by_months:  ".b-datepicker__calendar_months .b-datepicker-nav__icon-left",
-    nav_right_by_months: ".b-datepicker__calendar_months .b-datepicker-nav__icon-right",
-    nav_left_by_years:   ".b-datepicker__calendar_years .b-datepicker-nav__icon-left",
-    nav_right_by_years:  ".b-datepicker__calendar_years .b-datepicker-nav__icon-right",
+    _nav_left_by_days:    ".b-datepicker__calendar_days .b-datepicker-nav__icon-left",
+    _nav_right_by_days:   ".b-datepicker__calendar_days .b-datepicker-nav__icon-right",
+    _nav_left_by_months:  ".b-datepicker__calendar_months .b-datepicker-nav__icon-left",
+    _nav_right_by_months: ".b-datepicker__calendar_months .b-datepicker-nav__icon-right",
+    _nav_left_by_years:   ".b-datepicker__calendar_years .b-datepicker-nav__icon-left",
+    _nav_right_by_years:  ".b-datepicker__calendar_years .b-datepicker-nav__icon-right",
+    _day_item:             "b-datepicker-days__day",
+    _day_item_selected:    "b-datepicker-days__day_selected",
+    _month_item:           "b-datepicker-months__month",
+    _month_item_selected:  "b-datepicker-months__month_selected",
+    _year_item:            "b-datepicker-years__year",
+    _year_item_selected:   "b-datepicker-years__year_selected",
 
     region_name: "en",
 

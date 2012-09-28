@@ -18,12 +18,18 @@ Jade.DatePicker = function( handler, settings )
  */
 Jade.Core =
 {
-    nav_left_by_days:    ".b-datepicker__calendar_days .b-datepicker-nav__icon-left",
-    nav_right_by_days:   ".b-datepicker__calendar_days .b-datepicker-nav__icon-right",
-    nav_left_by_months:  ".b-datepicker__calendar_months .b-datepicker-nav__icon-left",
-    nav_right_by_months: ".b-datepicker__calendar_months .b-datepicker-nav__icon-right",
-    nav_left_by_years:   ".b-datepicker__calendar_years .b-datepicker-nav__icon-left",
-    nav_right_by_years:  ".b-datepicker__calendar_years .b-datepicker-nav__icon-right",
+    _nav_left_by_days:    ".b-datepicker__calendar_days .b-datepicker-nav__icon-left",
+    _nav_right_by_days:   ".b-datepicker__calendar_days .b-datepicker-nav__icon-right",
+    _nav_left_by_months:  ".b-datepicker__calendar_months .b-datepicker-nav__icon-left",
+    _nav_right_by_months: ".b-datepicker__calendar_months .b-datepicker-nav__icon-right",
+    _nav_left_by_years:   ".b-datepicker__calendar_years .b-datepicker-nav__icon-left",
+    _nav_right_by_years:  ".b-datepicker__calendar_years .b-datepicker-nav__icon-right",
+    _day_item:             "b-datepicker-days__day",
+    _day_item_selected:    "b-datepicker-days__day_selected",
+    _month_item:           "b-datepicker-months__month",
+    _month_item_selected:  "b-datepicker-months__month_selected",
+    _year_item:            "b-datepicker-years__year",
+    _year_item_selected:   "b-datepicker-years__year_selected",
 
     region_name: "en",
 
@@ -181,7 +187,7 @@ Jade.DayPicker =
             calendar = parent.find( ".b-datepicker__calendar" ),
             icon     = parent.find( ".b-datepicker__icon" );
 
-        calendar.css( "top", parent.height() + 2 );
+        calendar.css( "top", parent.outerHeight() );
         handler.attr( "data-datepicker-init", "true" );
 
         this.nodes =
@@ -250,7 +256,7 @@ Jade.DayPicker =
     {
         var self = this;
 
-        self.nodes.calendar.delegate( ".b-datepicker-days__day", "click", function( e )
+        self.nodes.calendar.delegate( "." + this._day_item, "click", function( e )
         {
             var day = $( this );
             self.hide();
@@ -258,7 +264,7 @@ Jade.DayPicker =
             self.nodes.handler.val( self.getSelectedDate( day.text() ) );
         });
 
-        self.nodes.calendar.delegate( ".b-datepicker-days__day_selected", "click", function( e )
+        self.nodes.calendar.delegate( "." + this._day_item_selected, "click", function( e )
         {
             self.hide();
         });
@@ -320,14 +326,14 @@ Jade.DayPicker =
     {
         var self = this;
 
-        self.nodes.parent.delegate( self.nav_left_by_days, "click", function()
+        self.nodes.parent.delegate( self._nav_left_by_days, "click", function()
         {
             self.setMonthByOffset( -1 );
             self.displayDaysWidgetItems();
             self.nodes.handler.focus();
         });
 
-        self.nodes.parent.delegate( self.nav_right_by_days, "click", function()
+        self.nodes.parent.delegate( self._nav_right_by_days, "click", function()
         {
             self.setMonthByOffset( 1 );
             self.displayDaysWidgetItems();
@@ -351,12 +357,12 @@ Jade.DayPicker =
              this.selected_date.getTime() <= this.last_date.getTime() )
         {
             this.nodes.calendar
-                .find( ".b-datepicker-days__day_selected" )
-                .attr( "class", "b-datepicker-days__day" );
+                .find( "." + this._day_item_selected )
+                .attr( "class", this._day_item );
 
             this.nodes.day_cells_obj
                 .eq( this.prev_offset + this.selected_date.getDate() )
-                .attr( "class", "b-datepicker-days__day_selected" );
+                .attr( "class", this._day_item_selected );
         }
     },
 
@@ -468,7 +474,7 @@ Jade.MonthPicker =
     {
         var self = this;
 
-        self.nodes.months_table.delegate( ".b-datepicker-months__month", "click", function()
+        self.nodes.months_table.delegate( "." + this._month_item, "click", function()
         {
             var month_number = $( this ).data( "month" );
 
@@ -477,7 +483,7 @@ Jade.MonthPicker =
             self.displayDaysWidgetItems();
         });
 
-        self.nodes.months_table.delegate( ".b-datepicker-months__month_selected", "click", function()
+        self.nodes.months_table.delegate( "." + this._month_item_selected, "click", function()
         {
             self.setCalendarState( "days" );
         });
@@ -488,14 +494,14 @@ Jade.MonthPicker =
     {
         var self = this;
 
-        self.nodes.parent.delegate( self.nav_left_by_months, "click", function()
+        self.nodes.parent.delegate( self._nav_left_by_months, "click", function()
         {
             self.setYearByOffset( -1 );
             self.displayDaysWidgetItems();
             self.nodes.handler.focus();
         });
 
-        self.nodes.parent.delegate( self.nav_right_by_months, "click", function()
+        self.nodes.parent.delegate( self._nav_right_by_months, "click", function()
         {
             self.setYearByOffset( 1 );
             self.displayDaysWidgetItems();
@@ -517,15 +523,15 @@ Jade.MonthPicker =
     {
         this.nodes.months_item_active = this.nodes.months_items
             .eq( num )
-            .removeClass( "b-datepicker-months__month" )
-            .addClass( "b-datepicker-months__month_selected" );
+            .removeClass( this._month_item )
+            .addClass( this._month_item_selected );
     },
 
     clearActiveMonth: function()
     {
         this.nodes.months_item_active
-            .addClass( "b-datepicker-months__month" )
-            .removeClass( "b-datepicker-months__month_selected" );
+            .addClass( this._month_item )
+            .removeClass( this._month_item_selected );
     },
 
     initMonthsTmpl: function()
@@ -578,7 +584,7 @@ Jade.YearPicker =
     {
         var self = this;
 
-        self.nodes.years_table.delegate( ".b-datepicker-years__year", "click", function()
+        self.nodes.years_table.delegate( "." + this._year_item, "click", function()
         {
             var year = $( this ).attr( "data-year" );
 
@@ -587,7 +593,7 @@ Jade.YearPicker =
             self.displayDaysWidgetItems();
         });
 
-        self.nodes.years_table.delegate( ".b-datepicker-years__year_selected", "click", function()
+        self.nodes.years_table.delegate( "." + this._year_item_selected, "click", function()
         {
             self.setCalendarState( "days" );
             self.showDate();
@@ -598,14 +604,14 @@ Jade.YearPicker =
     {
         var self = this;
 
-        self.nodes.parent.delegate( self.nav_left_by_years, "click", function()
+        self.nodes.parent.delegate( self._nav_left_by_years, "click", function()
         {
             self.setYearsInterval( -1 );
             self.displayYearsWidgetItems();
             self.nodes.handler.focus();
         });
 
-        self.nodes.parent.delegate( self.nav_right_by_years, "click", function()
+        self.nodes.parent.delegate( self._nav_right_by_years, "click", function()
         {
             self.setYearsInterval( 1 );
             self.displayYearsWidgetItems();
@@ -659,15 +665,15 @@ Jade.YearPicker =
     {
         this.nodes.years_item_active = this.nodes.years_items
             .filter( "[data-year='" + number + "']" )
-            .removeClass( "b-datepicker-years__year" )
-            .addClass( "b-datepicker-years__year_selected" );
+            .removeClass( this._year_item )
+            .addClass( this._year_item_selected );
     },
 
     clearActiveYear: function()
     {
         this.nodes.years_item_active
-            .removeClass( "b-datepicker-years__year_selected" )
-            .addClass( "b-datepicker-years__year" );
+            .removeClass( this._year_item_selected )
+            .addClass( this._year_item );
     },
 
     years_tmpl: (function()

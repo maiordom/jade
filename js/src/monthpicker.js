@@ -29,7 +29,7 @@ Jade.MonthPicker =
     {
         var self = this;
 
-        self.nodes.months_table.delegate( ".b-datepicker-months__month", "click", function()
+        self.nodes.months_table.delegate( "." + this._month_item, "click", function()
         {
             var month_number = $( this ).data( "month" );
 
@@ -38,7 +38,7 @@ Jade.MonthPicker =
             self.displayDaysWidgetItems();
         });
 
-        self.nodes.months_table.delegate( ".b-datepicker-months__month_selected", "click", function()
+        self.nodes.months_table.delegate( "." + this._month_item_selected, "click", function()
         {
             self.setCalendarState( "days" );
         });
@@ -49,14 +49,14 @@ Jade.MonthPicker =
     {
         var self = this;
 
-        self.nodes.parent.delegate( self.nav_left_by_months, "click", function()
+        self.nodes.parent.delegate( self._nav_left_by_months, "click", function()
         {
             self.setYearByOffset( -1 );
             self.displayDaysWidgetItems();
             self.nodes.handler.focus();
         });
 
-        self.nodes.parent.delegate( self.nav_right_by_months, "click", function()
+        self.nodes.parent.delegate( self._nav_right_by_months, "click", function()
         {
             self.setYearByOffset( 1 );
             self.displayDaysWidgetItems();
@@ -78,15 +78,15 @@ Jade.MonthPicker =
     {
         this.nodes.months_item_active = this.nodes.months_items
             .eq( num )
-            .removeClass( "b-datepicker-months__month" )
-            .addClass( "b-datepicker-months__month_selected" );
+            .removeClass( this._month_item )
+            .addClass( this._month_item_selected );
     },
 
     clearActiveMonth: function()
     {
         this.nodes.months_item_active
-            .addClass( "b-datepicker-months__month" )
-            .removeClass( "b-datepicker-months__month_selected" );
+            .addClass( this._month_item )
+            .removeClass( this._month_item_selected );
     },
 
     initMonthsTmpl: function()
