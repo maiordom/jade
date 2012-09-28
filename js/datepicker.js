@@ -192,17 +192,17 @@ Jade.DayPicker =
 
         this.nodes =
         {
-            handler:       handler,
-            parent:        parent,
-            icon:          icon,
-            calendar:      calendar,
-            month_curr:    calendar.find( ".b-datepicker-nav__month" ),
-            year_curr:     calendar.find( ".b-datepicker-nav__year" ),
-            days_table:    calendar.find( ".b-datepicker-days" ),
-            day_names_obj: calendar.find( ".b-datepicker-days__names-row td" ),
-            day_items: calendar.find( ".b-datepicker-days__numbers-row td" ),
-            today:         calendar.find( ".b-datepicker-today" ),
-            today_btn:     calendar.find( ".b-datepicker-today__btn" ),
+            handler:    handler,
+            parent:     parent,
+            icon:       icon,
+            calendar:   calendar,
+            month_curr: calendar.find( ".b-datepicker-nav__month" ),
+            year_curr:  calendar.find( ".b-datepicker-nav__year" ),
+            days_table: calendar.find( ".b-datepicker-days" ),
+            day_names:  calendar.find( ".b-datepicker-days__names-row td" ),
+            day_items:  calendar.find( ".b-datepicker-days__numbers-row td" ),
+            today:      calendar.find( ".b-datepicker-today" ),
+            today_btn:  calendar.find( ".b-datepicker-today__btn" ),
         };
 
         $.extend( this,
@@ -392,7 +392,7 @@ Jade.DayPicker =
     {
         for ( var i = 0; i < 7; i++ )
         {
-            this.nodes.day_names_obj.eq( i ).text( this.region.day_names_short[ i ] );
+            this.nodes.day_names.eq( i ).text( this.region.day_names_short[ i ] );
         }
     },
 
