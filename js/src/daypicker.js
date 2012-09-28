@@ -15,17 +15,17 @@ Jade.DayPicker =
 
         this.nodes =
         {
-            handler:       handler,
-            parent:        parent,
-            icon:          icon,
-            calendar:      calendar,
-            month_curr:    calendar.find( ".b-datepicker-nav__month" ),
-            year_curr:     calendar.find( ".b-datepicker-nav__year" ),
-            days_table:    calendar.find( ".b-datepicker-days" ),
-            day_names_obj: calendar.find( ".b-datepicker-days__names-row td" ),
-            day_cells_obj: calendar.find( ".b-datepicker-days__numbers-row td" ),
-            today:         calendar.find( ".b-datepicker-today" ),
-            today_btn:     calendar.find( ".b-datepicker-today__btn" ),
+            handler:    handler,
+            parent:     parent,
+            icon:       icon,
+            calendar:   calendar,
+            month_curr: calendar.find( ".b-datepicker-nav__month" ),
+            year_curr:  calendar.find( ".b-datepicker-nav__year" ),
+            days_table: calendar.find( ".b-datepicker-days" ),
+            day_names:  calendar.find( ".b-datepicker-days__names-row td" ),
+            day_items:  calendar.find( ".b-datepicker-days__numbers-row td" ),
+            today:      calendar.find( ".b-datepicker-today" ),
+            today_btn:  calendar.find( ".b-datepicker-today__btn" ),
         };
 
         $.extend( this,
@@ -183,7 +183,7 @@ Jade.DayPicker =
                 .find( "." + this._day_item_selected )
                 .attr( "class", this._day_item );
 
-            this.nodes.day_cells_obj
+            this.nodes.day_items
                 .eq( this.prev_offset + this.selected_date.getDate() )
                 .attr( "class", this._day_item_selected );
         }
@@ -215,7 +215,7 @@ Jade.DayPicker =
     {
         for ( var i = 0; i < 7; i++ )
         {
-            this.nodes.day_names_obj.eq( i ).text( this.region.day_names_short[ i ] );
+            this.nodes.day_names.eq( i ).text( this.region.day_names_short[ i ] );
         }
     },
 
@@ -261,7 +261,7 @@ Jade.DayPicker =
                 cl  = "b-datepicker-days__day_blocked";
             }
 
-            this.nodes.day_cells_obj.eq( i ).text( day ).attr( "class", cl );
+            this.nodes.day_items.eq( i ).text( day ).attr( "class", cl );
         }
     }
 };
