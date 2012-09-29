@@ -3,9 +3,10 @@ window.Jade = { Instances: [] };
 /**
  * @class Jade.DatePicker
  */
-Jade.DatePicker = function( handler, settings )
+Jade.DatePicker = function( date_field, settings )
 {
-    this.setVars( handler, settings );
+    this.setVars( settings );
+    this.cacheNodes( date_field );
     this.initDaysPicker();
     this.initYearPicker();
     this.initMonthsPicker();

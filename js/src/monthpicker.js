@@ -53,14 +53,14 @@ Jade.MonthPicker =
         {
             self.setYearByOffset( -1 );
             self.showDate();
-            self.nodes.handler.focus();
+            self.nodes.date_field.focus();
         });
 
         self.nodes.parent.delegate( self._nav_right_by_months, "click", function()
         {
             self.setYearByOffset( 1 );
             self.showDate();
-            self.nodes.handler.focus();
+            self.nodes.date_field.focus();
         });
     },
 

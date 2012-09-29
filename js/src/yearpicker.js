@@ -18,10 +18,18 @@ Jade.YearPicker =
 
         self.nodes.year_curr.click( function()
         {
-            self.years_interval.offset = 0;
-            self.setYearsInterval( 0 );
-            self.setCalendarState( "years" );
-            self.displayYearsWidgetItems();
+            if ( self.state === "years" )
+            {
+                self.setCalendarState( "days" );
+                self.showDate();
+            }
+            else
+            {
+                self.years_interval.offset = 0;
+                self.setYearsInterval( 0 );
+                self.setCalendarState( "years" );
+                self.displayYearsWidgetItems();
+            }
         });
     },
 
@@ -53,14 +61,14 @@ Jade.YearPicker =
         {
             self.setYearsInterval( -1 );
             self.displayYearsWidgetItems();
-            self.nodes.handler.focus();
+            self.nodes.date_field.focus();
         });
 
         self.nodes.parent.delegate( self._nav_right_by_years, "click", function()
         {
             self.setYearsInterval( 1 );
             self.displayYearsWidgetItems();
-            self.nodes.handler.focus();
+            self.nodes.date_field.focus();
         });
     },
 
