@@ -73,7 +73,9 @@ Jade.DatePicker =
 
     onKeyUp: function( self )
     {
-         this.nodes.date_field.keyup( function( e )
+         var event_name = $.browser.opera ? "keypress" : "keyup";
+
+         this.nodes.date_field[ event_name ]( function( e )
          {
             switch( e.keyCode )
             {
