@@ -36,7 +36,7 @@ Jade.DayPicker =
 
         this.nodes =
         {
-            date_field:    date_field,
+            date_field: date_field,
             parent:     parent,
             icon:       icon,
             calendar:   calendar,
