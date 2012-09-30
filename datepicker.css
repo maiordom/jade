@@ -22,10 +22,10 @@
         cursor: pointer;
         }
 
-    .b-datepicker__calendar_days {}
+    .b-datepicker__calendar_dates {}
 
-        .b-datepicker__calendar_days .b-datepicker-days         { display: table; }
-        .b-datepicker__calendar_days .b-datepicker-nav__month   { display: inline; }
+        .b-datepicker__calendar_dates .b-datepicker-dates         { display: table; }
+        .b-datepicker__calendar_dates .b-datepicker-nav__month   { display: inline; }
 
     .b-datepicker__calendar_months {}
 
@@ -49,7 +49,6 @@
            -moz-border-radius: 5px;
                 border-radius: 5px;
         }
-
         .b-datepicker-header {
             border: 1px solid #f0dbc1;
             background: #f3e8cf;
@@ -83,31 +82,31 @@
                         .b-datepicker-nav__year:hover,
                         .b-datepicker-nav__month:hover { border-bottom: 1px dashed #2e2c2d; }
 
-        .b-datepicker-days {
+        .b-datepicker-dates {
             border-spacing: 2px;
             display: none;
             }
-            .b-datepicker-days td {
+            .b-datepicker-dates td {
                 padding: 4px;
                 text-align: center;
                 border: 1px solid #fff;
                 }
-                .b-datepicker-days__day {
+                .b-datepicker-dates__item {
                     cursor: pointer;
                     color: #454545;
                     }
-                .b-datepicker-days__day_blocked {
+                .b-datepicker-dates__item_blocked {
                     color: #d2d2d2;
                     }
-                .b-datepicker-years__year:hover,
-                .b-datepicker-months__month:hover,
-                .b-datepicker-days__day:hover {
+                .b-datepicker-years__item:hover,
+                .b-datepicker-months__item:hover,
+                .b-datepicker-dates__item:hover {
                     border: 1px solid #ffca00;
                     color: #d96a00;
                     }
-                .b-datepicker-months__month_selected,
-                .b-datepicker-days__day_selected,
-                .b-datepicker-years__year_selected {
+                .b-datepicker-months__item_selected,
+                .b-datepicker-dates__item_selected,
+                .b-datepicker-years__item_selected {
                     border: 1px solid #8d4500 !important;
                     background: #fbc694;
                     color: #d96a00 !important;
@@ -135,14 +134,14 @@
             text-align: center;
             }
             .b-datepicker-months__row {}
-                .b-datepicker-months__month {
+                .b-datepicker-months__item {
                     width: 57px;
                     height: 29px;
                     border: 1px solid #aaaaaa;
                     cursor: pointer;
                     }
-                .b-datepicker-months__month:hover {}
-                .b-datepicker-months__month_selected {}
+                .b-datepicker-months__item:hover {}
+                .b-datepicker-months__item_selected {}
 
         .b-datepicker-years {
             border-spacing: 2px;
@@ -151,11 +150,11 @@
             text-align: center;
             }
             .b-datepicker-years__row {}
-                .b-datepicker-years__year {
+                .b-datepicker-years__item {
                     width: 32px;
                     height: 29px;
                     border: 1px solid #aaaaaa;
                     cursor: pointer;
                     }
-                .b-datepicker-years__year:hover {}
-                .b-datepicker-years__year_selected {}
+                .b-datepicker-years__item:hover {}
+                .b-datepicker-years__item_selected {}

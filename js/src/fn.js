@@ -1,7 +1,7 @@
-$.extend( Jade.DatePicker.prototype, Jade.MonthPicker );
-$.extend( Jade.DatePicker.prototype, Jade.YearPicker );
-$.extend( Jade.DatePicker.prototype, Jade.Core );
-$.extend( Jade.DatePicker.prototype, Jade.DayPicker );
+$.extend( Jade.DatePickerWidget.prototype, Jade.Core );
+$.extend( Jade.DatePickerWidget.prototype, Jade.DatePicker );
+$.extend( Jade.DatePickerWidget.prototype, Jade.MonthPicker );
+$.extend( Jade.DatePickerWidget.prototype, Jade.YearPicker );
 
 $.fn.datepicker = function( settings )
 {
@@ -17,7 +17,7 @@ $.fn.datepicker = function( settings )
             return false;
         }
 
-        instance = new Jade.DatePicker( $( this ), settings );
+        instance = new Jade.DatePickerWidget( $( this ), settings );
 
         Jade.Instances.push( instance );
     });

@@ -1,70 +1,76 @@
 /**
- * @lends Jade.Datepicker.prototype
+ * @lends Jade.DatePickerWidget.prototype
  */
 Jade.MonthPicker =
 {
     initMonthsPicker: function()
     {
         this.initMonthsTmpl();
-        this.displayMonthsWidgetItems();
+        this.setMonths();
 
-        this.onMonthsWidgetOpen();
-        this.onMonthsItemOpen();
-        this.onYearsNavByMonthState();
+        this.onMonthsWidgetOpen( this );
+        this.onMonthsItemOpen( this );
+        this.onYearsNavByMonthState( this );
     },
 
-    onMonthsWidgetOpen: function()
+    onMonthsWidgetOpen: function( self )
     {
-        var self = this;
-
-        self.nodes.month_curr.click( function()
+        this.nodes.month_curr.click( function()
         {
-            self.clearActiveMonth();
-            self.setMonthItemActive( self.getFirstDateMonth() );
-            self.setCalendarState( "months" );
+            self.openMonthWidget();
         });
     },
 
-    onMonthsItemOpen: function()
+    onMonthsItemOpen: function( self )
     {
-        var self = this;
-
-        self.nodes.months_table.delegate( "." + this._month_item, "click", function()
+        this.nodes.months_table.delegate( "." + this._months_item, "click", function()
         {
-            var month_number = $( this ).data( "month" );
-
-            self.setCalendarState( "days" );
-            self.setMonthByNumber( month_number );
-            self.displayDaysWidgetItems();
+            self.selectMonth( $( this ).data( "month" ) );
         });
 
-        self.nodes.months_table.delegate( "." + this._month_item_selected, "click", function()
+        this.nodes.months_table.delegate( "." + this._months_item_selected, "click", function()
         {
-            self.setCalendarState( "days" );
-            self.displayDaysWidgetItems();
+            self.selectMonth( $( this ).data( "month" ) );
         });
     },
 
-    onYearsNavByMonthState: function()
+    onYearsNavByMonthState: function( self )
     {
-        var self = this;
-
-        self.nodes.parent.delegate( self._nav_left_by_months, "click", function()
+        this.nodes.parent.delegate( self._nav_left_by_months, "click", function()
         {
-            self.setYearByOffset( -1 );
-            self.showDate();
-            self.nodes.date_field.focus();
+            self.navigateByYears( -1 );
         });
 
-        self.nodes.parent.delegate( self._nav_right_by_months, "click", function()
+        this.nodes.parent.delegate( self._nav_right_by_months, "click", function()
         {
-            self.setYearByOffset( 1 );
-            self.showDate();
-            self.nodes.date_field.focus();
+            self.navigateByYears( 1 );
         });
     },
 
-    displayMonthsWidgetItems: function()
+    openMonthWidget: function()
+    {
+        this.clearActiveMonth();
+        this.setMonthItemActive( this.getFirstDateMonth() );
+        this.setCalendarState( "months" );
+        this.nodes.date_field.focus();
+    },
+
+    selectMonth: function( month )
+    {
+        this.setCalendarState( "dates" );
+        this.setMonthByNumber( month );
+        this.updateDates();
+        this.nodes.date_field.focus();
+    },
+
+    navigateByYears: function( offset )
+    {
+        this.setYearByOffset( offset );
+        this.updateDates();
+        this.nodes.date_field.focus();
+    },
+
+    setMonths: function()
     {
         for ( var i = 0, ilen = this.nodes.months_items.length; i < ilen; i++ )
         {
@@ -76,17 +82,16 @@ Jade.MonthPicker =
 
     setMonthItemActive: function( num )
     {
-        this.nodes.months_item_active = this.nodes.months_items
-            .eq( num )
-            .removeClass( this._month_item )
-            .addClass( this._month_item_selected );
+        this.nodes.months_item_active = this.nodes.months_items.eq( num )
+            .removeClass( this._months_item )
+            .addClass( this._months_item_selected );
     },
 
     clearActiveMonth: function()
     {
         this.nodes.months_item_active
-            .addClass( this._month_item )
-            .removeClass( this._month_item_selected );
+            .addClass( this._months_item )
+            .removeClass( this._months_item_selected );
     },
 
     initMonthsTmpl: function()
@@ -95,13 +100,13 @@ Jade.MonthPicker =
 
         this.nodes.months_item_active = $();
         this.nodes.months_table = this.nodes.calendar.find( ".b-datepicker-months" );
-        this.nodes.months_items = this.nodes.calendar.find( ".b-datepicker-months__month" );
+        this.nodes.months_items = this.nodes.calendar.find( ".b-datepicker-months__item" );
     },
 
     months_tmpl: (function()
     {
         var
-            month = '<td class="b-datepicker-months__month"></td>',
+            month = '<td class="b-datepicker-months__item"></td>',
             row   = '<tr class="b-datepicker-months__row">' + month + month + month + '</tr>';
 
         return '<table class="b-datepicker-months">' + row + row + row + row + '</table>';

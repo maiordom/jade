@@ -1,9 +1,9 @@
 window.Jade = { Instances: [] };
 
 /**
- * @class Jade.DatePicker
+ * @class Jade.DatePickerWidget
  */
-Jade.DatePicker = function( date_field, settings )
+Jade.DatePickerWidget = function( date_field, settings )
 {
     this.setVars( settings );
     this.cacheNodes( date_field );
@@ -13,22 +13,23 @@ Jade.DatePicker = function( date_field, settings )
 };
 
 /**
- * @lends Jade.Datepicker.prototype
+ * @lends Jade.DatePickerWidget.prototype
  */
 Jade.Core =
 {
-    _nav_left_by_days:    ".b-datepicker__calendar_days .b-datepicker-nav__icon-left",
-    _nav_right_by_days:   ".b-datepicker__calendar_days .b-datepicker-nav__icon-right",
-    _nav_left_by_months:  ".b-datepicker__calendar_months .b-datepicker-nav__icon-left",
-    _nav_right_by_months: ".b-datepicker__calendar_months .b-datepicker-nav__icon-right",
-    _nav_left_by_years:   ".b-datepicker__calendar_years .b-datepicker-nav__icon-left",
-    _nav_right_by_years:  ".b-datepicker__calendar_years .b-datepicker-nav__icon-right",
-    _day_item:             "b-datepicker-days__day",
-    _day_item_selected:    "b-datepicker-days__day_selected",
-    _month_item:           "b-datepicker-months__month",
-    _month_item_selected:  "b-datepicker-months__month_selected",
-    _year_item:            "b-datepicker-years__year",
-    _year_item_selected:   "b-datepicker-years__year_selected",
+    _nav_left_by_dates:    ".b-datepicker__calendar_dates .b-datepicker-nav__icon-left",
+    _nav_right_by_dates:   ".b-datepicker__calendar_dates .b-datepicker-nav__icon-right",
+    _nav_left_by_months:   ".b-datepicker__calendar_months .b-datepicker-nav__icon-left",
+    _nav_right_by_months:  ".b-datepicker__calendar_months .b-datepicker-nav__icon-right",
+    _nav_left_by_years:    ".b-datepicker__calendar_years .b-datepicker-nav__icon-left",
+    _nav_right_by_years:   ".b-datepicker__calendar_years .b-datepicker-nav__icon-right",
+
+    _dates_item:           "b-datepicker-dates__item",
+    _dates_item_selected:  "b-datepicker-dates__item_selected",
+    _months_item:          "b-datepicker-months__item",
+    _months_item_selected: "b-datepicker-months__item_selected",
+    _years_item:           "b-datepicker-years__item",
+    _years_item_selected:  "b-datepicker-years__item_selected",
 
     region_name: "en",
 
@@ -44,18 +45,18 @@ Jade.Core =
 
         en:
         {
-            day_names_short:   [ "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" ],
-            day_names:         [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ],
+            day_names_short:   [ "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" ],
+            day_names:         [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ],
             month_names:       [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ],
             month_names_short: [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ]
         }
     },
 
-    getSelectedDate: function( day )
+    getFormatDate: function()
     {
         var date = this.selected_date;
 
-        return date.getFullYear() + "." + ( date.getMonth() + 1 ) + "." + day;
+        return date.getFullYear() + "." + ( date.getMonth() + 1 ) + "." + date.getDate();
     },
 
     getSelectedDateYear: function()
@@ -73,10 +74,10 @@ Jade.Core =
         return this.first_date.getMonth();
     },
 
-    setSelectedDate: function( day )
+    setSelectedDate: function( date )
     {
         this.selected_date = new Date( this.first_date );
-        this.selected_date.setDate( day );
+        this.selected_date.setDate( date );
         this.selected_date.setHours( 0, 0, 0, 0 );
     },
 
@@ -100,6 +101,12 @@ Jade.Core =
         this.setMonthByNumber( month_number );
     },
 
+    isDisplaySelectedDate: function()
+    {
+        return this.first_date.getTime()    <= this.selected_date.getTime() &&
+               this.selected_date.getTime() <= this.last_date.getTime();
+    },
+
     setMonthByNumber: function( number )
     {
         this.first_date.setMonth( number );
@@ -117,14 +124,14 @@ Jade.Core =
         this.last_date.setDate( 0 );
         this.last_date.setHours( 0, 0, 0, 0 );
 
-        this.last_day = this.last_date.getDate();
+        this.prev_last_date = new Date( this.first_date );
+        this.prev_last_date.setDate( 0 );
+        this.prev_last_date = this.prev_last_date.getDate();
 
-        this.prev_last_day = new Date( this.first_date );
-        this.prev_last_day.setDate( 0 );
-        this.prev_last_day = this.prev_last_day.getDate();
+        this.prev_dates  = ( this.first_date.getDay() + 6 ) % 7;
+        this.prev_offset = ( ( this.prev_dates + 7 ) % 7 ) - 1;
 
-        this.prev_days   = ( this.first_date.getDay() + 6 ) % 7;
-        this.prev_offset = ( ( this.prev_days + 7 ) % 7 ) - 1;
+        this.region_name === "ru" ? null : this.prev_offset++;
     },
 
     tmpl: (function()
@@ -154,14 +161,14 @@ Jade.Core =
                     '</tr>' +
                 '</table>' +
             '</div>' +
-            '<table class="b-datepicker-days">' +
-                '<tr class="b-datepicker-days__names-row">'   + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-days__numbers-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-days__numbers-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-days__numbers-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-days__numbers-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-days__numbers-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-days__numbers-row">' + tmpl_inner_row + '</tr>' +
+            '<table class="b-datepicker-dates">' +
+                '<tr class="b-datepicker-dates__names-row">'   + tmpl_inner_row + '</tr>' +
+                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
+                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
+                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
+                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
+                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
+                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
             '</table>' +
             '<table class="b-datepicker-today">' +
                 '<tr>' +
