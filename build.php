@@ -1,7 +1,7 @@
 <?php
 
 $base_dir     = "js/src/";
-$file_name    = "js/datepicker.js";
+$file_name    = "js/datepicker.bundle.js";
 $file_content = "";
 
 $files = Array( "core.js", "datepicker.js", "monthpicker.js", "yearpicker.js", "fn.js" );
