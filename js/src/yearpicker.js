@@ -6,13 +6,17 @@ Jade.YearPicker =
     initYearPicker: function()
     {
         this.initYearsTmpl();
-
-        this.onYearsWidgetOpen( this );
-        this.onYearsItemOpen( this );
-        this.onYearsNavByYearsState( this );
+        this.bindYearPickerEvents();
     },
 
-    onYearsWidgetOpen: function( self )
+    bindYearPickerEvents: function()
+    {
+        this.bindYearsWidgetOpen( this );
+        this.bindYearsItemOpen( this );
+        this.bindYearsNavByYearsState( this );
+    },
+
+    bindYearsWidgetOpen: function( self )
     {
         this.nodes.year_curr.click( function()
         {
@@ -20,7 +24,7 @@ Jade.YearPicker =
         });
     },
 
-    onYearsItemOpen: function( self )
+    bindYearsItemOpen: function( self )
     {
         this.nodes.years_table.delegate( "." + this._years_item, "click", function()
         {
@@ -33,14 +37,14 @@ Jade.YearPicker =
         });
     },
 
-    onYearsNavByYearsState: function( self )
+    bindYearsNavByYearsState: function( self )
     {
-        this.nodes.parent.delegate( self._nav_left_by_years, "click", function()
+        this.nodes.parent.delegate( this._nav_left_by_years, "click", function()
         {
             self.navigateByYearsInterval( -1 );
         });
 
-        this.nodes.parent.delegate( self._nav_right_by_years, "click", function()
+        this.nodes.parent.delegate( this._nav_right_by_years, "click", function()
         {
             self.navigateByYearsInterval( 1 );
         });

@@ -31,7 +31,9 @@ Jade.Core =
     _years_item:           "b-datepicker-years__item",
     _years_item_selected:  "b-datepicker-years__item_selected",
 
-    region_name: "en",
+    keypress_event_name: $.browser.opera ? "keypress" : "keyup",
+
+    default_region_name: "en",
 
     regions:
     {
@@ -52,11 +54,155 @@ Jade.Core =
         }
     },
 
+    date_format_patterns:
+    {
+        en: "yy/mm/dd",
+        ru: "dd/mm/yy"
+    },
+
+    parseDate: function ( format, value )
+    {
+        if ( !value ) { return null; }
+
+        var region            = this.region,
+            day_names_short   = region.day_names_short,
+            day_names         = region.day_names,
+            month_names_short = region.month_names_short,
+            month_names       = region.month_names,
+            year    = -1,
+            month   = -1,
+            day     = -1,
+            literal = false, lookAhead, getNumber, checkLiteral;
+
+        lookAhead = function( match )
+        {
+            var matches = ( i + 1 < format.length && format.charAt( i + 1 ) === match );
+
+            if ( matches ) { i++; }
+
+            return matches;
+        };
+
+        getNumber = function( match )
+        {
+            var is_doubled = lookAhead( match ),
+                size       = match === "y" && is_doubled ? 4 : 2,
+                digits     = new RegExp( "^\\d{1," + size + "}" ),
+                num        = value.substring( i_value ).match( digits );
+
+            if ( !num )
+            {
+                throw "Missing number at position " + i_value;
+            }
+
+            i_value += num[ 0 ].length;
+
+            return parseInt( num[ 0 ], 10 );
+        };
+
+        checkLiteral = function()
+        {
+            if ( value.charAt( i_value ) !== format.charAt( i ) )
+            {
+                throw "Unexpected literal at position " + i_value;
+            }
+
+            i_value++;
+        };
+
+        var i_value = 0;
+
+        for ( var i = 0; i < format.length; i++ )
+        {
+            switch ( format.charAt( i ) )
+            {
+                case "d": day   = getNumber( "d" ); break;
+                case "m": month = getNumber( "m" ); break;
+                case "y": year  = getNumber( "y" ); break;
+                default: checkLiteral();
+            }
+        }
+
+        if ( i_value < value.length )
+        {
+            var extra = value.substr( i_value );
+
+            if ( !/^\s+/.test( extra ) )
+            {
+                throw "Extra/unparsed characters found in date: " + extra;
+            }
+        }
+
+        if ( year === -1 )
+        {
+            year = new Date().getFullYear();
+        }
+
+        var date = new Date( year, month - 1, day );
+
+        if ( date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day )
+        {
+            throw "Invalid date";
+        }
+
+        return date;
+    },
+
+    formatDate: function ( format, date )
+    {
+        var
+            region            = this.region,
+            day_names_short   = region.day_names_short,
+            day_names         = region.day_names,
+            month_names_short = region.month_names_short,
+            month_names       = region.month_names,
+            output = "", lookAhead, formatNumber, getYear;
+
+        lookAhead = function( match )
+        {
+            var matches = ( index + 1 < format.length && format.charAt( index + 1 ) === match );
+
+            if ( matches ) { index++; }
+
+            return matches;
+        };
+
+        formatNumber = function( match, value, len )
+        {
+            var num = "" + value;
+
+            if ( lookAhead( match ) )
+            {
+                while ( num.length < len ) { num = "0" + num; }
+            }
+
+            return num;
+        };
+
+        getYear = function()
+        {
+            return lookAhead( "y" ) ? date.getFullYear() : ( date.getYear() % 100 < 10 ? "0" : "" ) + date.getYear() % 100;
+        }
+
+        for ( var index = 0; index < format.length; index++ )
+        {
+            switch ( format.charAt( index ) )
+            {
+                case "d": output += formatNumber( "d", date.getDate(), 2 ); break;
+                case "m": output += formatNumber( "m", date.getMonth() + 1, 2 ); break;
+                case "y": output += getYear(); break;
+                default:  output += format.charAt( index );
+            }
+        }
+
+        return output;
+    },
+
     getFormatDate: function()
     {
         var date = this.selected_date;
 
-        return date.getFullYear() + "." + ( date.getMonth() + 1 ) + "." + date.getDate();
+        return this.formatDate( this.date_format, this.selected_date );
     },
 
     getSelectedDateYear: function()
@@ -136,11 +282,12 @@ Jade.Core =
 
     tmpl: (function()
     {
-        var tmpl_inner_row = "";
+        var dates_row = "", names_row = "";
 
         for ( var i = 0; i < 7; i++ )
         {
-            tmpl_inner_row += '<td><div></div></td>';
+            names_row += '<th><div></div></th>';
+            dates_row += '<td><div></div></td>';
         }
 
         return "" +
@@ -151,7 +298,7 @@ Jade.Core =
                         '<td class="b-datepicker-nav__cell-left">' +
                             '<div class="b-datepicker-nav__icon-left">◄</div>' +
                         '</td>' +
-                        '<td colspan="5" align="center">' +
+                        '<td class="b-datepicker-nav__title" colspan="5" align="center">' +
                             '<span class="b-datepicker-nav__month"></span>' +
                             '<span class="b-datepicker-nav__year"></span>' +
                         '</td>' +
@@ -162,13 +309,15 @@ Jade.Core =
                 '</table>' +
             '</div>' +
             '<table class="b-datepicker-dates">' +
-                '<tr class="b-datepicker-dates__names-row">'   + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
+                '<tbody>' +
+                    '<tr class="b-datepicker-dates__names-row">' + names_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                '</tbody>' +
             '</table>' +
             '<table class="b-datepicker-today">' +
                 '<tr>' +

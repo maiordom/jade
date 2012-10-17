@@ -33,7 +33,9 @@ Jade.Core =
     _years_item:           "b-datepicker-years__item",
     _years_item_selected:  "b-datepicker-years__item_selected",
 
-    region_name: "en",
+    keypress_event_name: $.browser.opera ? "keypress" : "keyup",
+
+    default_region_name: "en",
 
     regions:
     {
@@ -54,11 +56,155 @@ Jade.Core =
         }
     },
 
+    date_format_patterns:
+    {
+        en: "yy/mm/dd",
+        ru: "dd/mm/yy"
+    },
+
+    parseDate: function ( format, value )
+    {
+        if ( !value ) { return null; }
+
+        var region            = this.region,
+            day_names_short   = region.day_names_short,
+            day_names         = region.day_names,
+            month_names_short = region.month_names_short,
+            month_names       = region.month_names,
+            year    = -1,
+            month   = -1,
+            day     = -1,
+            literal = false, lookAhead, getNumber, checkLiteral;
+
+        lookAhead = function( match )
+        {
+            var matches = ( i + 1 < format.length && format.charAt( i + 1 ) === match );
+
+            if ( matches ) { i++; }
+
+            return matches;
+        };
+
+        getNumber = function( match )
+        {
+            var is_doubled = lookAhead( match ),
+                size       = match === "y" && is_doubled ? 4 : 2,
+                digits     = new RegExp( "^\\d{1," + size + "}" ),
+                num        = value.substring( i_value ).match( digits );
+
+            if ( !num )
+            {
+                throw "Missing number at position " + i_value;
+            }
+
+            i_value += num[ 0 ].length;
+
+            return parseInt( num[ 0 ], 10 );
+        };
+
+        checkLiteral = function()
+        {
+            if ( value.charAt( i_value ) !== format.charAt( i ) )
+            {
+                throw "Unexpected literal at position " + i_value;
+            }
+
+            i_value++;
+        };
+
+        var i_value = 0;
+
+        for ( var i = 0; i < format.length; i++ )
+        {
+            switch ( format.charAt( i ) )
+            {
+                case "d": day   = getNumber( "d" ); break;
+                case "m": month = getNumber( "m" ); break;
+                case "y": year  = getNumber( "y" ); break;
+                default: checkLiteral();
+            }
+        }
+
+        if ( i_value < value.length )
+        {
+            var extra = value.substr( i_value );
+
+            if ( !/^\s+/.test( extra ) )
+            {
+                throw "Extra/unparsed characters found in date: " + extra;
+            }
+        }
+
+        if ( year === -1 )
+        {
+            year = new Date().getFullYear();
+        }
+
+        var date = new Date( year, month - 1, day );
+
+        if ( date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day )
+        {
+            throw "Invalid date";
+        }
+
+        return date;
+    },
+
+    formatDate: function ( format, date )
+    {
+        var
+            region            = this.region,
+            day_names_short   = region.day_names_short,
+            day_names         = region.day_names,
+            month_names_short = region.month_names_short,
+            month_names       = region.month_names,
+            output = "", lookAhead, formatNumber, getYear;
+
+        lookAhead = function( match )
+        {
+            var matches = ( index + 1 < format.length && format.charAt( index + 1 ) === match );
+
+            if ( matches ) { index++; }
+
+            return matches;
+        };
+
+        formatNumber = function( match, value, len )
+        {
+            var num = "" + value;
+
+            if ( lookAhead( match ) )
+            {
+                while ( num.length < len ) { num = "0" + num; }
+            }
+
+            return num;
+        };
+
+        getYear = function()
+        {
+            return lookAhead( "y" ) ? date.getFullYear() : ( date.getYear() % 100 < 10 ? "0" : "" ) + date.getYear() % 100;
+        }
+
+        for ( var index = 0; index < format.length; index++ )
+        {
+            switch ( format.charAt( index ) )
+            {
+                case "d": output += formatNumber( "d", date.getDate(), 2 ); break;
+                case "m": output += formatNumber( "m", date.getMonth() + 1, 2 ); break;
+                case "y": output += getYear(); break;
+                default:  output += format.charAt( index );
+            }
+        }
+
+        return output;
+    },
+
     getFormatDate: function()
     {
         var date = this.selected_date;
 
-        return date.getFullYear() + "." + ( date.getMonth() + 1 ) + "." + date.getDate();
+        return this.formatDate( this.date_format, this.selected_date );
     },
 
     getSelectedDateYear: function()
@@ -138,11 +284,12 @@ Jade.Core =
 
     tmpl: (function()
     {
-        var tmpl_inner_row = "";
+        var dates_row = "", names_row = "";
 
         for ( var i = 0; i < 7; i++ )
         {
-            tmpl_inner_row += '<td><div></div></td>';
+            names_row += '<th><div></div></th>';
+            dates_row += '<td><div></div></td>';
         }
 
         return "" +
@@ -153,7 +300,7 @@ Jade.Core =
                         '<td class="b-datepicker-nav__cell-left">' +
                             '<div class="b-datepicker-nav__icon-left">◄</div>' +
                         '</td>' +
-                        '<td colspan="5" align="center">' +
+                        '<td class="b-datepicker-nav__title" colspan="5" align="center">' +
                             '<span class="b-datepicker-nav__month"></span>' +
                             '<span class="b-datepicker-nav__year"></span>' +
                         '</td>' +
@@ -164,13 +311,15 @@ Jade.Core =
                 '</table>' +
             '</div>' +
             '<table class="b-datepicker-dates">' +
-                '<tr class="b-datepicker-dates__names-row">'   + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
-                '<tr class="b-datepicker-dates__items-row">' + tmpl_inner_row + '</tr>' +
+                '<tbody>' +
+                    '<tr class="b-datepicker-dates__names-row">' + names_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                    '<tr class="b-datepicker-dates__items-row">' + dates_row + '</tr>' +
+                '</tbody>' +
             '</table>' +
             '<table class="b-datepicker-today">' +
                 '<tr>' +
@@ -200,12 +349,15 @@ Jade.DatePicker =
             last_date:      null,
             prev_last_date: null,
             prev_dates:     null,
-            prev_offset:    null
+            prev_offset:    null,
+            date_value:     null
         });
 
         $.extend( this, settings );
 
+        this.region_name ? null : this.region_name = this.default_region_name;
         this.region = this.regions[ this.region_name ];
+        this.date_format = this.date_format_patterns[ this.region_name ];
     },
 
     cacheNodes: function( date_field )
@@ -226,7 +378,7 @@ Jade.DatePicker =
             calendar:    calendar,
             month_curr:  calendar.find( ".b-datepicker-nav__month" ),
             year_curr:   calendar.find( ".b-datepicker-nav__year" ),
-            dates_names: calendar.find( ".b-datepicker-dates__names-row td" ),
+            dates_names: calendar.find( ".b-datepicker-dates__names-row th" ),
             dates_items: calendar.find( ".b-datepicker-dates__items-row td" ),
             dates_table: calendar.find( ".b-datepicker-dates" ),
             today:       calendar.find( ".b-datepicker-today" ),
@@ -245,78 +397,69 @@ Jade.DatePicker =
         this.setDatesByMonth();
         this.tryToDisplaySelectedDate();
 
-        this.onTodaySet( this );
-        this.onDaySelect( this );
-        this.onIconClick( this );
-        this.onDateFieldFocus( this );
-        this.onDateFieldBlur( this );
-        this.onMonthNavByDaysState( this );
-        this.onKeyUp( this );
+        this.bindDayPickerEvents();
 
-        this.nodes.date_field.val( this.getFormatDate() );
+        this.date_value = this.getFormatDate();
+        this.nodes.date_field.val( this.date_value );
     },
 
-    onKeyUp: function( self )
+    bindDayPickerEvents: function()
     {
-         var event_name = $.browser.opera ? "keypress" : "keyup";
+        var self = this;
 
-         this.nodes.date_field[ event_name ]( function( e )
-         {
-            switch( e.keyCode )
-            {
-                case 27: { self.hide(); } break;
-            }
-         });
-    },
-
-    onTodaySet: function( self )
-    {
         this.nodes.today_btn.click( function()
         {
             self.hide();
             self.selectDate( self.today, self.today.getDate() );
         });
-    },
 
-    onDaySelect: function( self )
-    {
-        this.nodes.calendar.delegate( "." + this._dates_item, "click", function( e )
+        this.nodes.icon.click( function()
+        {
+            self.nodes.calendar.is( ":visible" ) ? self.hide() : self.nodes.date_field.focus();
+        });
+
+        this.nodes.date_field[ this.keypress_event_name ]( function( e )
+        {
+            switch( e.keyCode )
+            {
+                case 27: { self.hide(); } break;
+                default: { self.setDateByString(); }
+            }
+        });
+
+        this.nodes.date_field.focus( function()
+        {
+            self.show();
+        });
+
+        this.nodes.date_field.blur( function()
+        {
+            self.is_mouseleave ? self.hide() : null;
+        });
+
+        this.nodes.calendar.delegate( "." + this._dates_item, "click", function()
         {
             self.hide();
             self.selectDate( self.first_date, $( this ).text() );
         });
 
-        this.nodes.calendar.delegate( "." + this._dates_item_selected, "click", function( e )
+        this.nodes.calendar.delegate( "." + this._dates_item_selected, "click", function()
         {
             self.hide();
         });
-    },
 
-    onIconClick: function( self )
-    {
-        this.nodes.icon.click( function()
+        this.nodes.parent.delegate( this._nav_left_by_dates, "click", function()
         {
-            self.nodes.calendar.is( ":visible" ) ? self.hide() : self.nodes.date_field.focus();
+            self.navigateByMonth( -1 );
+        });
+
+        this.nodes.parent.delegate( this._nav_right_by_dates, "click", function()
+        {
+            self.navigateByMonth( 1 );
         });
     },
 
-    onDateFieldFocus: function( self )
-    {
-        this.nodes.date_field.focus( function()
-        {
-            self.show();
-        });
-    },
-
-    onDateFieldBlur: function( self )
-    {
-        this.nodes.date_field.blur( function()
-        {
-            self.is_mouseleave ? self.hide() : null;
-        });
-    },
-
-    onMouseMove: function( self )
+    bindMouseMoveEvents: function( self )
     {
         this.nodes.parent.mouseleave( function( e )
         {
@@ -330,17 +473,33 @@ Jade.DatePicker =
         });
     },
 
-    onMonthNavByDaysState: function( self )
+    offMouseMoveEvents: function()
     {
-        self.nodes.parent.delegate( self._nav_left_by_dates, "click", function()
-        {
-            self.navigateByMonth( -1 );
-        });
+        this.nodes.parent.off( "mouseleave mouseenter" );
+    },
 
-        self.nodes.parent.delegate( self._nav_right_by_dates, "click", function()
+    setDateByString: function()
+    {
+        var date_value = this.nodes.date_field.val(), date;
+
+        if ( this.nodes.date_field.val() !== this.date_value )
         {
-            self.navigateByMonth( 1 );
-        });
+            try
+            {
+                date = this.parseDate( this.date_format, date_value );
+            }
+            catch( e )
+            {
+                console.log( e );
+            }
+
+            if ( date )
+            {
+                this.setMonthInterval( date );
+                this.setSelectedDate( date.getDate() );
+                this.updateDates();
+            }
+        }
     },
 
     navigateByMonth: function( offset )
@@ -355,12 +514,8 @@ Jade.DatePicker =
         this.setMonthInterval( date );
         this.setSelectedDate( date_number );
         this.updateDates();
-        this.nodes.date_field.val( this.getFormatDate() );
-    },
-
-    offMouseMove: function()
-    {
-        this.nodes.parent.off( "mouseleave mouseenter" );
+        this.date_value = this.getFormatDate();
+        this.nodes.date_field.val( this.date_value );
     },
 
     tryToDisplaySelectedDate: function()
@@ -437,7 +592,7 @@ Jade.DatePicker =
 
             this.updateDateTitle();
             this.setCalendarState( "dates" );
-            this.onMouseMove( this );
+            this.bindMouseMoveEvents( this );
             this.is_mouseleave = false;
             this.nodes.calendar.fadeIn( 200 );
         }
@@ -445,7 +600,7 @@ Jade.DatePicker =
 
     hide: function()
     {
-        this.offMouseMove();
+        this.offMouseMoveEvents();
         this.nodes.calendar.fadeOut( 200 );
     },
 
@@ -465,13 +620,17 @@ Jade.MonthPicker =
     {
         this.initMonthsTmpl();
         this.setMonths();
-
-        this.onMonthsWidgetOpen( this );
-        this.onMonthsItemOpen( this );
-        this.onYearsNavByMonthState( this );
+        this.bindMonthPickerEvents();
     },
 
-    onMonthsWidgetOpen: function( self )
+    bindMonthPickerEvents: function()
+    {
+        this.bindMonthsWidgetOpen( this );
+        this.bindMonthsItemOpen( this );
+        this.bindYearsNavByMonthState( this );
+    },
+
+    bindMonthsWidgetOpen: function( self )
     {
         this.nodes.month_curr.click( function()
         {
@@ -479,7 +638,7 @@ Jade.MonthPicker =
         });
     },
 
-    onMonthsItemOpen: function( self )
+    bindMonthsItemOpen: function( self )
     {
         this.nodes.months_table.delegate( "." + this._months_item, "click", function()
         {
@@ -492,14 +651,14 @@ Jade.MonthPicker =
         });
     },
 
-    onYearsNavByMonthState: function( self )
+    bindYearsNavByMonthState: function( self )
     {
-        this.nodes.parent.delegate( self._nav_left_by_months, "click", function()
+        this.nodes.parent.delegate( this._nav_left_by_months, "click", function()
         {
             self.navigateByYears( -1 );
         });
 
-        this.nodes.parent.delegate( self._nav_right_by_months, "click", function()
+        this.nodes.parent.delegate( this._nav_right_by_months, "click", function()
         {
             self.navigateByYears( 1 );
         });
@@ -579,13 +738,17 @@ Jade.YearPicker =
     initYearPicker: function()
     {
         this.initYearsTmpl();
-
-        this.onYearsWidgetOpen( this );
-        this.onYearsItemOpen( this );
-        this.onYearsNavByYearsState( this );
+        this.bindYearPickerEvents();
     },
 
-    onYearsWidgetOpen: function( self )
+    bindYearPickerEvents: function()
+    {
+        this.bindYearsWidgetOpen( this );
+        this.bindYearsItemOpen( this );
+        this.bindYearsNavByYearsState( this );
+    },
+
+    bindYearsWidgetOpen: function( self )
     {
         this.nodes.year_curr.click( function()
         {
@@ -593,7 +756,7 @@ Jade.YearPicker =
         });
     },
 
-    onYearsItemOpen: function( self )
+    bindYearsItemOpen: function( self )
     {
         this.nodes.years_table.delegate( "." + this._years_item, "click", function()
         {
@@ -606,14 +769,14 @@ Jade.YearPicker =
         });
     },
 
-    onYearsNavByYearsState: function( self )
+    bindYearsNavByYearsState: function( self )
     {
-        this.nodes.parent.delegate( self._nav_left_by_years, "click", function()
+        this.nodes.parent.delegate( this._nav_left_by_years, "click", function()
         {
             self.navigateByYearsInterval( -1 );
         });
 
-        this.nodes.parent.delegate( self._nav_right_by_years, "click", function()
+        this.nodes.parent.delegate( this._nav_right_by_years, "click", function()
         {
             self.navigateByYearsInterval( 1 );
         });

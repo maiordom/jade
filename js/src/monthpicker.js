@@ -7,13 +7,17 @@ Jade.MonthPicker =
     {
         this.initMonthsTmpl();
         this.setMonths();
-
-        this.onMonthsWidgetOpen( this );
-        this.onMonthsItemOpen( this );
-        this.onYearsNavByMonthState( this );
+        this.bindMonthPickerEvents();
     },
 
-    onMonthsWidgetOpen: function( self )
+    bindMonthPickerEvents: function()
+    {
+        this.bindMonthsWidgetOpen( this );
+        this.bindMonthsItemOpen( this );
+        this.bindYearsNavByMonthState( this );
+    },
+
+    bindMonthsWidgetOpen: function( self )
     {
         this.nodes.month_curr.click( function()
         {
@@ -21,7 +25,7 @@ Jade.MonthPicker =
         });
     },
 
-    onMonthsItemOpen: function( self )
+    bindMonthsItemOpen: function( self )
     {
         this.nodes.months_table.delegate( "." + this._months_item, "click", function()
         {
@@ -34,14 +38,14 @@ Jade.MonthPicker =
         });
     },
 
-    onYearsNavByMonthState: function( self )
+    bindYearsNavByMonthState: function( self )
     {
-        this.nodes.parent.delegate( self._nav_left_by_months, "click", function()
+        this.nodes.parent.delegate( this._nav_left_by_months, "click", function()
         {
             self.navigateByYears( -1 );
         });
 
-        this.nodes.parent.delegate( self._nav_right_by_months, "click", function()
+        this.nodes.parent.delegate( this._nav_right_by_months, "click", function()
         {
             self.navigateByYears( 1 );
         });

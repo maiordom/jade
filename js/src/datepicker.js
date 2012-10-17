@@ -15,12 +15,15 @@ Jade.DatePicker =
             last_date:      null,
             prev_last_date: null,
             prev_dates:     null,
-            prev_offset:    null
+            prev_offset:    null,
+            date_value:     null
         });
 
         $.extend( this, settings );
 
+        this.region_name ? null : this.region_name = this.default_region_name;
         this.region = this.regions[ this.region_name ];
+        this.date_format = this.date_format_patterns[ this.region_name ];
     },
 
     cacheNodes: function( date_field )
@@ -41,7 +44,7 @@ Jade.DatePicker =
             calendar:    calendar,
             month_curr:  calendar.find( ".b-datepicker-nav__month" ),
             year_curr:   calendar.find( ".b-datepicker-nav__year" ),
-            dates_names: calendar.find( ".b-datepicker-dates__names-row td" ),
+            dates_names: calendar.find( ".b-datepicker-dates__names-row th" ),
             dates_items: calendar.find( ".b-datepicker-dates__items-row td" ),
             dates_table: calendar.find( ".b-datepicker-dates" ),
             today:       calendar.find( ".b-datepicker-today" ),
@@ -60,78 +63,69 @@ Jade.DatePicker =
         this.setDatesByMonth();
         this.tryToDisplaySelectedDate();
 
-        this.onTodaySet( this );
-        this.onDaySelect( this );
-        this.onIconClick( this );
-        this.onDateFieldFocus( this );
-        this.onDateFieldBlur( this );
-        this.onMonthNavByDaysState( this );
-        this.onKeyUp( this );
+        this.bindDayPickerEvents();
 
-        this.nodes.date_field.val( this.getFormatDate() );
+        this.date_value = this.getFormatDate();
+        this.nodes.date_field.val( this.date_value );
     },
 
-    onKeyUp: function( self )
+    bindDayPickerEvents: function()
     {
-         var event_name = $.browser.opera ? "keypress" : "keyup";
+        var self = this;
 
-         this.nodes.date_field[ event_name ]( function( e )
-         {
-            switch( e.keyCode )
-            {
-                case 27: { self.hide(); } break;
-            }
-         });
-    },
-
-    onTodaySet: function( self )
-    {
         this.nodes.today_btn.click( function()
         {
             self.hide();
             self.selectDate( self.today, self.today.getDate() );
         });
-    },
 
-    onDaySelect: function( self )
-    {
-        this.nodes.calendar.delegate( "." + this._dates_item, "click", function( e )
+        this.nodes.icon.click( function()
+        {
+            self.nodes.calendar.is( ":visible" ) ? self.hide() : self.nodes.date_field.focus();
+        });
+
+        this.nodes.date_field[ this.keypress_event_name ]( function( e )
+        {
+            switch( e.keyCode )
+            {
+                case 27: { self.hide(); } break;
+                default: { self.setDateByString(); }
+            }
+        });
+
+        this.nodes.date_field.focus( function()
+        {
+            self.show();
+        });
+
+        this.nodes.date_field.blur( function()
+        {
+            self.is_mouseleave ? self.hide() : null;
+        });
+
+        this.nodes.calendar.delegate( "." + this._dates_item, "click", function()
         {
             self.hide();
             self.selectDate( self.first_date, $( this ).text() );
         });
 
-        this.nodes.calendar.delegate( "." + this._dates_item_selected, "click", function( e )
+        this.nodes.calendar.delegate( "." + this._dates_item_selected, "click", function()
         {
             self.hide();
         });
-    },
 
-    onIconClick: function( self )
-    {
-        this.nodes.icon.click( function()
+        this.nodes.parent.delegate( this._nav_left_by_dates, "click", function()
         {
-            self.nodes.calendar.is( ":visible" ) ? self.hide() : self.nodes.date_field.focus();
+            self.navigateByMonth( -1 );
+        });
+
+        this.nodes.parent.delegate( this._nav_right_by_dates, "click", function()
+        {
+            self.navigateByMonth( 1 );
         });
     },
 
-    onDateFieldFocus: function( self )
-    {
-        this.nodes.date_field.focus( function()
-        {
-            self.show();
-        });
-    },
-
-    onDateFieldBlur: function( self )
-    {
-        this.nodes.date_field.blur( function()
-        {
-            self.is_mouseleave ? self.hide() : null;
-        });
-    },
-
-    onMouseMove: function( self )
+    bindMouseMoveEvents: function( self )
     {
         this.nodes.parent.mouseleave( function( e )
         {
@@ -145,17 +139,33 @@ Jade.DatePicker =
         });
     },
 
-    onMonthNavByDaysState: function( self )
+    offMouseMoveEvents: function()
     {
-        self.nodes.parent.delegate( self._nav_left_by_dates, "click", function()
-        {
-            self.navigateByMonth( -1 );
-        });
+        this.nodes.parent.off( "mouseleave mouseenter" );
+    },
 
-        self.nodes.parent.delegate( self._nav_right_by_dates, "click", function()
+    setDateByString: function()
+    {
+        var date_value = this.nodes.date_field.val(), date;
+
+        if ( this.nodes.date_field.val() !== this.date_value )
         {
-            self.navigateByMonth( 1 );
-        });
+            try
+            {
+                date = this.parseDate( this.date_format, date_value );
+            }
+            catch( e )
+            {
+                console.log( e );
+            }
+
+            if ( date )
+            {
+                this.setMonthInterval( date );
+                this.setSelectedDate( date.getDate() );
+                this.updateDates();
+            }
+        }
     },
 
     navigateByMonth: function( offset )
@@ -170,12 +180,8 @@ Jade.DatePicker =
         this.setMonthInterval( date );
         this.setSelectedDate( date_number );
         this.updateDates();
-        this.nodes.date_field.val( this.getFormatDate() );
-    },
-
-    offMouseMove: function()
-    {
-        this.nodes.parent.off( "mouseleave mouseenter" );
+        this.date_value = this.getFormatDate();
+        this.nodes.date_field.val( this.date_value );
     },
 
     tryToDisplaySelectedDate: function()
@@ -252,7 +258,7 @@ Jade.DatePicker =
 
             this.updateDateTitle();
             this.setCalendarState( "dates" );
-            this.onMouseMove( this );
+            this.bindMouseMoveEvents( this );
             this.is_mouseleave = false;
             this.nodes.calendar.fadeIn( 200 );
         }
@@ -260,7 +266,7 @@ Jade.DatePicker =
 
     hide: function()
     {
-        this.offMouseMove();
+        this.offMouseMoveEvents();
         this.nodes.calendar.fadeOut( 200 );
     },
 

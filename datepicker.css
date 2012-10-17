@@ -3,7 +3,7 @@
     float: left;
     padding-right: 17px;
     border: 1px solid #abadb3;
-    font: 13px Arial, sans-serif;
+    font: 11px Arial, sans-serif;
     color: #000;
     }
     .b-datepicker__input {
@@ -24,20 +24,21 @@
 
     .b-datepicker__calendar_dates {}
 
-        .b-datepicker__calendar_dates .b-datepicker-dates         { display: table; }
-        .b-datepicker__calendar_dates .b-datepicker-nav__month   { display: inline; }
+        .b-datepicker__calendar_dates .b-datepicker-dates      { display: table; }
+        .b-datepicker__calendar_dates .b-datepicker-nav__month { display: inline; }
 
     .b-datepicker__calendar_months {}
 
-        .b-datepicker__calendar_months .b-datepicker-months     { display: table; }
-        .b-datepicker__calendar_months .b-datepicker-nav__year  { margin: 0; }
+        .b-datepicker__calendar_months .b-datepicker-months    { display: table; }
+        .b-datepicker__calendar_months .b-datepicker-nav__year { margin: 0; }
 
     .b-datepicker__calendar_years {}
 
-        .b-datepicker__calendar_years .b-datepicker-years       { display: table; }
-        .b-datepicker__calendar_years .b-datepicker-nav__year   { margin: 0; }
+        .b-datepicker__calendar_years .b-datepicker-years      { display: table; }
+        .b-datepicker__calendar_years .b-datepicker-nav__year  { margin: 0; }
 
     .b-datepicker__calendar {
+        width: 189px;
         position: absolute;
         right: -1px;
         float: left;
@@ -52,7 +53,7 @@
         .b-datepicker-header {
             border: 1px solid #f0dbc1;
             background: #f3e8cf;
-            margin: 2px;
+            margin: 2px 2px 0 2px;
 
             -webkit-border-radius: 5px;
                -moz-border-radius: 5px;
@@ -60,43 +61,52 @@
             }
             .b-datepicker-header__content {
                 width: 100%;
-                border-spacing: 0;
                 height: 24px;
                 }
                 .b-datepicker-nav {}
 
-                    .b-datepicker-nav__cell-right,
-                    .b-datepicker-nav__cell-left { width: 25px; }
+                    .b-datepicker-nav__cell-left  { padding-left: 6px; }
+                    .b-datepicker-nav__cell-right { padding-right: 6px; }
+                    .b-datepicker-nav__title      { width: 100%; }
 
-                        .b-datepicker-nav__icon-left   { float: right; }
-                        .b-datepicker-nav__icon-right  { float: left; }
-                        .b-datepicker-nav__year        { margin: 0 0 0 5px; }
+                        .b-datepicker-nav__icon-left  { float: right; }
+                        .b-datepicker-nav__icon-right { float: left; }
+                        .b-datepicker-nav__year       { margin: 0 0 0 5px; }
 
                         .b-datepicker-nav__icon-left,
-                        .b-datepicker-nav__icon-right  { cursor: pointer; color: #2e2c2d; }
+                        .b-datepicker-nav__icon-right { cursor: pointer; color: #2e2c2d; }
 
                         .b-datepicker-nav__year,
-                        .b-datepicker-nav__month       { color: #4f4f4f; cursor: pointer; }
-                        .b-datepicker-nav__month       { display: none; }
+                        .b-datepicker-nav__month      { color: #4f4f4f; cursor: pointer; }
+                        .b-datepicker-nav__month      { display: none; }
 
                         .b-datepicker-nav__year:hover,
                         .b-datepicker-nav__month:hover { border-bottom: 1px dashed #2e2c2d; }
 
+        /* Таблица с выбором даты месяца */
         .b-datepicker-dates {
-            border-spacing: 2px;
             display: none;
+            width: 100%;
+            padding: 2px 6px 0 3px;
             }
+            .b-datepicker-dates__names-row {}
+                .b-datepicker-dates__names-row th {
+                    font-weight: normal;
+                    text-align: center;
+                    color: #black;
+                    border: 1px solid #fff;
+                    }
             .b-datepicker-dates td {
-                padding: 4px;
-                text-align: center;
                 border: 1px solid #fff;
+                text-align: right;
+                padding-right: 3px;
+                color: #575757;
                 }
                 .b-datepicker-dates__item {
                     cursor: pointer;
-                    color: #454545;
                     }
                 .b-datepicker-dates__item_blocked {
-                    color: #d2d2d2;
+                    color: #d2d2d2 !important;
                     }
                 .b-datepicker-years__item:hover,
                 .b-datepicker-months__item:hover,
@@ -107,8 +117,7 @@
                 .b-datepicker-months__item_selected,
                 .b-datepicker-dates__item_selected,
                 .b-datepicker-years__item_selected {
-                    border: 1px solid #8d4500 !important;
-                    background: #fbc694;
+                    border: 1px solid #ffca00 !important;
                     color: #d96a00 !important;
                     cursor: pointer;
                     }
@@ -116,45 +125,50 @@
         .b-datepicker-today {
             width: 100%;
             height: 17px;
-            margin-bottom: 4px;
-            border-spacing: 0;
+            margin: 3px 0 6px 0;
             }
             .b-datepicker-today__btn {
                 color: #0097c8;
                 border: 1px solid #aaaaaa;
                 cursor: pointer;
-                font-size: 11px;
-                padding: 0 3px;
+                font-size: 10px;
+                padding: 1px 10px;
                 }
 
+        /* Таблица с выбором месяца */
         .b-datepicker-months {
-            border-spacing: 2px;
+            width: 100%;
             display: none;
-            margin: 3px;
+            padding: 0 3px 0 3px;
             text-align: center;
             }
             .b-datepicker-months__row {}
                 .b-datepicker-months__item {
-                    width: 57px;
-                    height: 29px;
                     border: 1px solid #aaaaaa;
                     cursor: pointer;
+                    font-size: 12px;
+                    padding: 7px 0 7px 0;
                     }
                 .b-datepicker-months__item:hover {}
-                .b-datepicker-months__item_selected {}
+                .b-datepicker-months__item_selected {
+                    font-size: 12px;
+                    }
 
+        /* Таблица с выбором года */
         .b-datepicker-years {
-            border-spacing: 2px;
+            width: 100%;
             display: none;
-            margin: 3px;
+            padding: 0 3px 0 3px;
             text-align: center;
             }
             .b-datepicker-years__row {}
                 .b-datepicker-years__item {
-                    width: 32px;
-                    height: 29px;
                     border: 1px solid #aaaaaa;
                     cursor: pointer;
+                    font-size: 12px;
+                    padding: 7px 0 7px 0;
                     }
                 .b-datepicker-years__item:hover {}
-                .b-datepicker-years__item_selected {}
+                .b-datepicker-years__item_selected {
+                    font-size: 12px;
+                    }
