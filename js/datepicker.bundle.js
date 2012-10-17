@@ -26,6 +26,8 @@ Jade.Core =
     _nav_left_by_years:    ".b-datepicker__calendar_years .b-datepicker-nav__icon-left",
     _nav_right_by_years:   ".b-datepicker__calendar_years .b-datepicker-nav__icon-right",
 
+    _calendar:             "b-datepicker__calendar",
+    _dates_item_blocked:   "b-datepicker-dates__item_blocked",
     _dates_item:           "b-datepicker-dates__item",
     _dates_item_selected:  "b-datepicker-dates__item_selected",
     _months_item:          "b-datepicker-months__item",
@@ -558,17 +560,17 @@ Jade.DatePicker =
             if ( i <= this.prev_offset )
             {
                 date = this.prev_last_date - this.prev_offset + i;
-                cl   = "b-datepicker-dates__item_blocked";
+                cl   = this._dates_item_blocked;
             }
             else if ( ( i > this.prev_offset && i <= ( this.prev_offset + last_date ) ) )
             {
                 date = i - this.prev_offset;
-                cl   = "b-datepicker-dates__item";
+                cl   = this._dates_item;
             }
             else
             {
                 date = i - last_date - this.prev_offset;
-                cl   = "b-datepicker-dates__item_blocked";
+                cl   = this._dates_item_blocked;;
             }
 
             this.nodes.dates_items.eq( i ).text( date ).attr( "class", cl );
@@ -577,7 +579,7 @@ Jade.DatePicker =
 
     setCalendarState: function( state )
     {
-        this.nodes.calendar.attr( "class", "b-datepicker__calendar b-datepicker__calendar_" + state );
+        this.nodes.calendar.attr( "class", this._calendar + " " + this._calendar + "_" + state );
         this.state = state;
     },
 

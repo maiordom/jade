@@ -24,6 +24,8 @@ Jade.Core =
     _nav_left_by_years:    ".b-datepicker__calendar_years .b-datepicker-nav__icon-left",
     _nav_right_by_years:   ".b-datepicker__calendar_years .b-datepicker-nav__icon-right",
 
+    _calendar:             "b-datepicker__calendar",
+    _dates_item_blocked:   "b-datepicker-dates__item_blocked",
     _dates_item:           "b-datepicker-dates__item",
     _dates_item_selected:  "b-datepicker-dates__item_selected",
     _months_item:          "b-datepicker-months__item",

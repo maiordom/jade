@@ -224,17 +224,17 @@ Jade.DatePicker =
             if ( i <= this.prev_offset )
             {
                 date = this.prev_last_date - this.prev_offset + i;
-                cl   = "b-datepicker-dates__item_blocked";
+                cl   = this._dates_item_blocked;
             }
             else if ( ( i > this.prev_offset && i <= ( this.prev_offset + last_date ) ) )
             {
                 date = i - this.prev_offset;
-                cl   = "b-datepicker-dates__item";
+                cl   = this._dates_item;
             }
             else
             {
                 date = i - last_date - this.prev_offset;
-                cl   = "b-datepicker-dates__item_blocked";
+                cl   = this._dates_item_blocked;;
             }
 
             this.nodes.dates_items.eq( i ).text( date ).attr( "class", cl );
@@ -243,7 +243,7 @@ Jade.DatePicker =
 
     setCalendarState: function( state )
     {
-        this.nodes.calendar.attr( "class", "b-datepicker__calendar b-datepicker__calendar_" + state );
+        this.nodes.calendar.attr( "class", this._calendar + " " + this._calendar + "_" + state );
         this.state = state;
     },
 
