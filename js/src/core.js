@@ -7,9 +7,10 @@ Jade.DatePickerWidget = function( date_field, settings )
 {
     this.setVars( settings );
     this.cacheNodes( date_field );
-    this.initDaysPicker();
-    this.initYearPicker();
-    this.initMonthsPicker();
+
+    this.init_daypicker   ? this.initDaysPicker()   : null;
+    this.init_monthpicker ? this.initMonthsPicker() : null;
+    this.init_yearpicker  ? this.initYearPicker()   : null;
 };
 
 /**
@@ -17,6 +18,8 @@ Jade.DatePickerWidget = function( date_field, settings )
  */
 Jade.Core =
 {
+    _nav_left:             ".b-datepicker-nav__icon-left",
+    _nav_right:            ".b-datepicker-nav__icon-right",
     _nav_left_by_dates:    ".b-datepicker__calendar_dates .b-datepicker-nav__icon-left",
     _nav_right_by_dates:   ".b-datepicker__calendar_dates .b-datepicker-nav__icon-right",
     _nav_left_by_months:   ".b-datepicker__calendar_months .b-datepicker-nav__icon-left",
@@ -24,6 +27,7 @@ Jade.Core =
     _nav_left_by_years:    ".b-datepicker__calendar_years .b-datepicker-nav__icon-left",
     _nav_right_by_years:   ".b-datepicker__calendar_years .b-datepicker-nav__icon-right",
 
+    _nav_item_active:      "b-datepicker-nav__item_active",
     _calendar:             "b-datepicker__calendar",
     _dates_item_blocked:   "b-datepicker-dates__item_blocked",
     _dates_item:           "b-datepicker-dates__item",
@@ -202,14 +206,7 @@ Jade.Core =
 
     getFormatDate: function()
     {
-        var date = this.selected_date;
-
         return this.formatDate( this.date_format, this.selected_date );
-    },
-
-    getSelectedDateYear: function()
-    {
-        return this.selected_date.getFullYear();
     },
 
     getFirstDateYear: function()

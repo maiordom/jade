@@ -41,6 +41,16 @@
         <div class="b-datepicker__icon"></div>
     </div>
 
+    <div class="b-datepicker">
+        <input class="b-datepicker__input" type="text" />
+        <div class="b-datepicker__icon"></div>
+    </div>
+
+    <div class="b-datepicker">
+        <input class="b-datepicker__input" type="text" />
+        <div class="b-datepicker__icon"></div>
+    </div>
+
 </div>
 
 <script type="text/javascript">
@@ -48,11 +58,9 @@
     $( document ).ready( function()
     {
         $( ".b-datepicker input" ).eq( 0 ).datepicker();
-
-        $( ".b-datepicker input" ).eq( 1 ).datepicker(
-        {
-            region_name: "ru"
-        });
+        $( ".b-datepicker input" ).eq( 1 ).datepicker( { region_name: "ru" } );
+        $( ".b-datepicker input" ).eq( 2 ).datepicker( { init_monthpicker: false } );
+        $( ".b-datepicker input" ).eq( 3 ).datepicker( { init_yearpicker: false } );
     });
     
 </script>

@@ -134,6 +134,7 @@ Jade.YearPicker =
     {
         $( this.nodes.today ).before( this.years_tmpl );
 
+        this.nodes.year_curr.addClass( this._nav_item_active );
         this.years_interval = { left: null, right: null, offset: 0 };
         this.nodes.years_item_active = $();
         this.nodes.years_table = this.nodes.calendar.find( ".b-datepicker-years" );

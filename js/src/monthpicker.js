@@ -102,6 +102,7 @@ Jade.MonthPicker =
     {
         $( this.nodes.today ).before( this.months_tmpl );
 
+        this.nodes.month_curr.addClass( this._nav_item_active );
         this.nodes.months_item_active = $();
         this.nodes.months_table = this.nodes.calendar.find( ".b-datepicker-months" );
         this.nodes.months_items = this.nodes.calendar.find( ".b-datepicker-months__item" );

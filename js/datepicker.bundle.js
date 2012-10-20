@@ -9,9 +9,10 @@ Jade.DatePickerWidget = function( date_field, settings )
 {
     this.setVars( settings );
     this.cacheNodes( date_field );
-    this.initDaysPicker();
-    this.initYearPicker();
-    this.initMonthsPicker();
+
+    this.init_daypicker   ? this.initDaysPicker()   : null;
+    this.init_monthpicker ? this.initMonthsPicker() : null;
+    this.init_yearpicker  ? this.initYearPicker()   : null;
 };
 
 /**
@@ -19,6 +20,8 @@ Jade.DatePickerWidget = function( date_field, settings )
  */
 Jade.Core =
 {
+    _nav_left:             ".b-datepicker-nav__icon-left",
+    _nav_right:            ".b-datepicker-nav__icon-right",
     _nav_left_by_dates:    ".b-datepicker__calendar_dates .b-datepicker-nav__icon-left",
     _nav_right_by_dates:   ".b-datepicker__calendar_dates .b-datepicker-nav__icon-right",
     _nav_left_by_months:   ".b-datepicker__calendar_months .b-datepicker-nav__icon-left",
@@ -26,6 +29,7 @@ Jade.Core =
     _nav_left_by_years:    ".b-datepicker__calendar_years .b-datepicker-nav__icon-left",
     _nav_right_by_years:   ".b-datepicker__calendar_years .b-datepicker-nav__icon-right",
 
+    _nav_item_active:      "b-datepicker-nav__item_active",
     _calendar:             "b-datepicker__calendar",
     _dates_item_blocked:   "b-datepicker-dates__item_blocked",
     _dates_item:           "b-datepicker-dates__item",
@@ -204,14 +208,7 @@ Jade.Core =
 
     getFormatDate: function()
     {
-        var date = this.selected_date;
-
         return this.formatDate( this.date_format, this.selected_date );
-    },
-
-    getSelectedDateYear: function()
-    {
-        return this.selected_date.getFullYear();
     },
 
     getFirstDateYear: function()
@@ -343,16 +340,19 @@ Jade.DatePicker =
     {
         $.extend( this,
         {
-            selected_date:  new Date(),
-            today:          new Date(),
-            is_mouseleave:  false,
-            state:          null,
-            first_date:     null,
-            last_date:      null,
-            prev_last_date: null,
-            prev_dates:     null,
-            prev_offset:    null,
-            date_value:     null
+            init_daypicker:   true,
+            init_monthpicker: true,
+            init_yearpicker:  true,
+            selected_date:    new Date(),
+            today:            new Date(),
+            is_mouseleave:    false,
+            state:            null,
+            first_date:       null,
+            last_date:        null,
+            prev_last_date:   null,
+            prev_dates:       null,
+            prev_offset:      null,
+            date_value:       null
         });
 
         $.extend( this, settings );
@@ -408,6 +408,9 @@ Jade.DatePicker =
     bindDayPickerEvents: function()
     {
         var self = this;
+
+        this.nodes.parent.delegate( this._nav_left,  "mousedown", function() { return false; } );
+        this.nodes.parent.delegate( this._nav_right, "mousedown", function() { return false; } ) ;
 
         this.nodes.today_btn.click( function()
         {
@@ -717,6 +720,7 @@ Jade.MonthPicker =
     {
         $( this.nodes.today ).before( this.months_tmpl );
 
+        this.nodes.month_curr.addClass( this._nav_item_active );
         this.nodes.months_item_active = $();
         this.nodes.months_table = this.nodes.calendar.find( ".b-datepicker-months" );
         this.nodes.months_items = this.nodes.calendar.find( ".b-datepicker-months__item" );
@@ -868,6 +872,7 @@ Jade.YearPicker =
     {
         $( this.nodes.today ).before( this.years_tmpl );
 
+        this.nodes.year_curr.addClass( this._nav_item_active );
         this.years_interval = { left: null, right: null, offset: 0 };
         this.nodes.years_item_active = $();
         this.nodes.years_table = this.nodes.calendar.find( ".b-datepicker-years" );

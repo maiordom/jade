@@ -7,16 +7,19 @@ Jade.DatePicker =
     {
         $.extend( this,
         {
-            selected_date:  new Date(),
-            today:          new Date(),
-            is_mouseleave:  false,
-            state:          null,
-            first_date:     null,
-            last_date:      null,
-            prev_last_date: null,
-            prev_dates:     null,
-            prev_offset:    null,
-            date_value:     null
+            init_daypicker:   true,
+            init_monthpicker: true,
+            init_yearpicker:  true,
+            selected_date:    new Date(),
+            today:            new Date(),
+            is_mouseleave:    false,
+            state:            null,
+            first_date:       null,
+            last_date:        null,
+            prev_last_date:   null,
+            prev_dates:       null,
+            prev_offset:      null,
+            date_value:       null
         });
 
         $.extend( this, settings );
@@ -72,6 +75,9 @@ Jade.DatePicker =
     bindDayPickerEvents: function()
     {
         var self = this;
+
+        this.nodes.parent.delegate( this._nav_left,  "mousedown", function() { return false; } );
+        this.nodes.parent.delegate( this._nav_right, "mousedown", function() { return false; } ) ;
 
         this.nodes.today_btn.click( function()
         {

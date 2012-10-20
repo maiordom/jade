@@ -4,7 +4,6 @@
     padding-right: 17px;
     border: 1px solid #abadb3;
     font: 11px Arial, sans-serif;
-    color: #000;
     }
     .b-datepicker__input {
         border: none;
@@ -69,19 +68,17 @@
                     .b-datepicker-nav__cell-right { padding-right: 6px; }
                     .b-datepicker-nav__title      { width: 100%; }
 
-                        .b-datepicker-nav__icon-left  { float: right; }
-                        .b-datepicker-nav__icon-right { float: left; }
-                        .b-datepicker-nav__year       { margin: 0 0 0 5px; }
+                        .b-datepicker-nav__icon-left   { float: right; }
+                        .b-datepicker-nav__icon-right  { float: left; }
+                        .b-datepicker-nav__year        { margin: 0 0 0 5px; }
 
                         .b-datepicker-nav__icon-left,
-                        .b-datepicker-nav__icon-right { cursor: pointer; color: #2e2c2d; }
+                        .b-datepicker-nav__icon-right  { cursor: pointer; color: #2e2c2d; }
 
                         .b-datepicker-nav__year,
-                        .b-datepicker-nav__month      { color: #4f4f4f; cursor: pointer; }
-                        .b-datepicker-nav__month      { display: none; }
-
-                        .b-datepicker-nav__year:hover,
-                        .b-datepicker-nav__month:hover { border-bottom: 1px dashed #2e2c2d; }
+                        .b-datepicker-nav__month       { color: #4f4f4f; }
+                        .b-datepicker-nav__month       { display: none; }
+                        .b-datepicker-nav__item_active { cursor: pointer; }
 
         /* Таблица с выбором даты месяца */
         .b-datepicker-dates {
