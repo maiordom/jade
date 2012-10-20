@@ -6,7 +6,7 @@ window.Jade = { Instances: [] };
 Jade.DatePickerWidget = function( date_field, settings )
 {
     this.setVars( settings );
-    this.cacheNodes( date_field );
+    this.cacheNodes( date_field, this.renderWrapper( date_field ) );
 
     this.init_daypicker   ? this.initDaysPicker()   : null;
     this.init_monthpicker ? this.initMonthsPicker() : null;

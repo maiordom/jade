@@ -21,46 +21,59 @@
     <style type="text/css">
         *             { margin: 0; padding: 0; }
         HTML, BODY    { height: 100%; }
-        .b-wrapper    { padding: 50px; }
-        .b-datepicker { margin: 40px; }
+        .b-wrapper    { padding: 40px; }
+        .b-datepicker { float: left; }
+
+        .b-title {
+            margin-left: 20px;
+            font: 11px Arial, sans-serif;
+            line-height: 18px;
+            }
+
+        .b-clearfix:before,
+        .b-clearfix:after {
+            display: table;
+            content: ""
+            }
+        .b-clearfix:after {
+            clear: both
+            }
     </style>
 
 </head>
 
 <body>
 
-<div class="b-wrapper">
+<div class="b-wrapper b-clearfix">
+    <input type="text" />
+    <span class="b-title">en</span>
+</div>
 
-    <div class="b-datepicker">
-        <input class="b-datepicker__input" type="text" />
-        <div class="b-datepicker__icon"></div>
-    </div>
+<div class="b-wrapper b-clearfix">
+    <input type="text" />
+    <span class="b-title">ru</span>
+</div>
 
-    <div class="b-datepicker">
-        <input class="b-datepicker__input" type="text" />
-        <div class="b-datepicker__icon"></div>
-    </div>
+<div class="b-wrapper b-clearfix">
+    <input type="text" />
+    <span class="b-title">disabled month picker</span>
+</div>
 
-    <div class="b-datepicker">
-        <input class="b-datepicker__input" type="text" />
-        <div class="b-datepicker__icon"></div>
-    </div>
-
-    <div class="b-datepicker">
-        <input class="b-datepicker__input" type="text" />
-        <div class="b-datepicker__icon"></div>
-    </div>
-
+<div class="b-wrapper b-clearfix">
+    <input type="text" />
+    <span class="b-title">disabled year picker</span>
 </div>
 
 <script type="text/javascript">
 
     $( document ).ready( function()
     {
-        $( ".b-datepicker input" ).eq( 0 ).datepicker();
-        $( ".b-datepicker input" ).eq( 1 ).datepicker( { region_name: "ru" } );
-        $( ".b-datepicker input" ).eq( 2 ).datepicker( { init_monthpicker: false } );
-        $( ".b-datepicker input" ).eq( 3 ).datepicker( { init_yearpicker: false } );
+        var inputs = $( "input" );
+
+        inputs.eq( 0 ).datepicker();
+        inputs.eq( 1 ).datepicker( { region_name: "ru" } );
+        inputs.eq( 2 ).datepicker( { init_monthpicker: false } );
+        inputs.eq( 3 ).datepicker( { init_yearpicker: false } );
     });
     
 </script>

@@ -8,7 +8,7 @@ global.Jade = { Instances: [] };
 Jade.DatePickerWidget = function( date_field, settings )
 {
     this.setVars( settings );
-    this.cacheNodes( date_field );
+    this.cacheNodes( date_field, this.renderWrapper( date_field ) );
 
     this.init_daypicker   ? this.initDaysPicker()   : null;
     this.init_monthpicker ? this.initMonthsPicker() : null;
@@ -362,22 +362,25 @@ Jade.DatePicker =
         this.date_format = this.date_format_patterns[ this.region_name ];
     },
 
-    cacheNodes: function( date_field )
+    renderWrapper: function( date_field )
     {
-        var
-            parent   = date_field.parent().append( this.tmpl ),
-            calendar = parent.find( ".b-datepicker__calendar" ),
-            icon     = parent.find( ".b-datepicker__icon" );
+        var parent   = $( "<div class='b-datepicker'>" ).append( this.tmpl ),
+            icon     = $( "<div class='b-datepicker__icon'>" ),
+            calendar = parent.find( ".b-datepicker__calendar" );
 
+        parent.insertBefore( date_field ).append( date_field, icon  ).width( date_field.outerWidth() + 17 );
         calendar.css( "top", parent.outerHeight() );
         date_field.attr( "data-datepicker-init", "true" );
 
+        return { parent: parent, icon: icon, calendar: calendar, date_field: date_field };
+    },
+
+    cacheNodes: function( date_field, wrapper_obj )
+    {
+        var calendar = wrapper_obj.calendar;
+
         this.nodes =
         {
-            date_field:  date_field,
-            parent:      parent,
-            icon:        icon,
-            calendar:    calendar,
             month_curr:  calendar.find( ".b-datepicker-nav__month" ),
             year_curr:   calendar.find( ".b-datepicker-nav__year" ),
             dates_names: calendar.find( ".b-datepicker-dates__names-row th" ),
@@ -386,6 +389,8 @@ Jade.DatePicker =
             today:       calendar.find( ".b-datepicker-today" ),
             today_btn:   calendar.find( ".b-datepicker-today__btn" )
         };
+
+        $.extend( this.nodes, wrapper_obj );
     },
 
     initDaysPicker: function()

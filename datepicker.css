@@ -1,11 +1,9 @@
 .b-datepicker {
     position: relative;
-    float: left;
-    padding-right: 17px;
     border: 1px solid #abadb3;
     font: 11px Arial, sans-serif;
     }
-    .b-datepicker__input {
+    .b-datepicker > input {
         border: none;
         outline: none;
         background: none;
