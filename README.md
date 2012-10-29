@@ -1,5 +1,7 @@
-jade (datepicker)
-=================
+jade
+====
+
+datepicker
 
 Демо
 ----
