@@ -1,4 +1,7 @@
 Jade.DatePicker = {
+
+    onSelectDate: function() {},
+
     setVars: function( settings )
     {
         $.extend( this, {
@@ -163,6 +166,7 @@ Jade.DatePicker = {
         this.updateDates();
         this.date_value = this.getFormatDate();
         this.nodes.date_field.val( this.date_value );
+        this.onSelectDate();
     },
 
     tryToDisplaySelectedDate: function() {
