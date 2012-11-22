@@ -1,14 +1,14 @@
-.b-datepicker {
+.jade {
     position: relative;
     border: 1px solid #abadb3;
     font: 11px Arial, sans-serif;
     }
-    .b-datepicker > input {
+    .jade > input {
         border: none;
         outline: none;
         background: none;
         }
-    .b-datepicker__icon {
+    .jade__icon {
         position: absolute;
         right: 4px;
         top: 50%;
@@ -19,22 +19,22 @@
         cursor: pointer;
         }
 
-    .b-datepicker__calendar_dates {}
+    .jade__calendar_dates {}
 
-        .b-datepicker__calendar_dates .b-datepicker-dates      { display: table; }
-        .b-datepicker__calendar_dates .b-datepicker-nav__month { display: inline; }
+        .jade__calendar_dates .jade-dates      { display: table; }
+        .jade__calendar_dates .jade-nav__month { display: inline; }
 
-    .b-datepicker__calendar_months {}
+    .jade__calendar_months {}
 
-        .b-datepicker__calendar_months .b-datepicker-months    { display: table; }
-        .b-datepicker__calendar_months .b-datepicker-nav__year { margin: 0; }
+        .jade__calendar_months .jade-months    { display: table; }
+        .jade__calendar_months .jade-nav__year { margin: 0; }
 
-    .b-datepicker__calendar_years {}
+    .jade__calendar_years {}
 
-        .b-datepicker__calendar_years .b-datepicker-years      { display: table; }
-        .b-datepicker__calendar_years .b-datepicker-nav__year  { margin: 0; }
+        .jade__calendar_years .jade-years      { display: table; }
+        .jade__calendar_years .jade-nav__year  { margin: 0; }
 
-    .b-datepicker__calendar {
+    .jade__calendar {
         width: 189px;
         position: absolute;
         right: -1px;
@@ -47,7 +47,7 @@
            -moz-border-radius: 5px;
                 border-radius: 5px;
         }
-        .b-datepicker-header {
+        .jade-header {
             border: 1px solid #f0dbc1;
             background: #f3e8cf;
             margin: 2px 2px 0 2px;
@@ -56,74 +56,74 @@
                -moz-border-radius: 5px;
                     border-radius: 5px;
             }
-            .b-datepicker-header__content {
+            .jade-header__content {
                 width: 100%;
                 height: 24px;
                 }
-                .b-datepicker-nav {}
+                .jade-nav {}
 
-                    .b-datepicker-nav__cell-left  { padding-left: 6px; }
-                    .b-datepicker-nav__cell-right { padding-right: 6px; }
-                    .b-datepicker-nav__title      { width: 100%; }
+                    .jade-nav__cell-left  { padding-left: 6px; }
+                    .jade-nav__cell-right { padding-right: 6px; }
+                    .jade-nav__title      { width: 100%; }
 
-                        .b-datepicker-nav__icon-left   { float: right; }
-                        .b-datepicker-nav__icon-right  { float: left; }
-                        .b-datepicker-nav__year        { margin: 0 0 0 5px; }
+                        .jade-nav__icon-left   { float: right; }
+                        .jade-nav__icon-right  { float: left; }
+                        .jade-nav__year        { margin: 0 0 0 5px; }
 
-                        .b-datepicker-nav__icon-left,
-                        .b-datepicker-nav__icon-right  { cursor: pointer; color: #2e2c2d; }
+                        .jade-nav__icon-left,
+                        .jade-nav__icon-right  { cursor: pointer; color: #2e2c2d; }
 
-                        .b-datepicker-nav__year,
-                        .b-datepicker-nav__month       { color: #4f4f4f; }
-                        .b-datepicker-nav__month       { display: none; }
-                        .b-datepicker-nav__item_active { cursor: pointer; }
+                        .jade-nav__year,
+                        .jade-nav__month       { color: #4f4f4f; }
+                        .jade-nav__month       { display: none; }
+                        .jade-nav__item_active { cursor: pointer; }
 
         /* Таблица с выбором даты месяца */
-        .b-datepicker-dates {
+        .jade-dates {
             display: none;
             width: 100%;
             padding: 2px 6px 1px 3px;
             }
-            .b-datepicker-dates__names-row {}
-                .b-datepicker-dates__names-row th {
+            .jade-dates__names-row {}
+                .jade-dates__names-row th {
                     font-weight: normal;
                     text-align: center;
                     color: #black;
                     border: 1px solid #fff;
                     padding-bottom: 3px;
                     }
-            .b-datepicker-dates td {
+            .jade-dates td {
                 border: 1px solid #fff;
                 text-align: right;
                 padding-right: 3px;
                 color: #575757;
                 }
-                .b-datepicker-dates__item {
+                .jade-dates__item {
                     cursor: pointer;
                     }
-                .b-datepicker-dates__item_blocked {
+                .jade-dates__item_blocked {
                     color: #d2d2d2 !important;
                     }
-                .b-datepicker-years__item:hover,
-                .b-datepicker-months__item:hover,
-                .b-datepicker-dates__item:hover {
+                .jade-years__item:hover,
+                .jade-months__item:hover,
+                .jade-dates__item:hover {
                     border: 1px solid #ffca00;
                     color: #d96a00;
                     }
-                .b-datepicker-months__item_selected,
-                .b-datepicker-dates__item_selected,
-                .b-datepicker-years__item_selected {
+                .jade-months__item_selected,
+                .jade-dates__item_selected,
+                .jade-years__item_selected {
                     border: 1px solid #ffca00 !important;
                     color: #d96a00 !important;
                     cursor: pointer;
                     }
 
-        .b-datepicker-today {
+        .jade-today {
             width: 100%;
             height: 17px;
             margin: 3px 0 6px 0;
             }
-            .b-datepicker-today__btn {
+            .jade-today__btn {
                 color: #0097c8;
                 border: 1px solid #aaaaaa;
                 cursor: pointer;
@@ -132,39 +132,39 @@
                 }
 
         /* Таблица с выбором месяца */
-        .b-datepicker-months {
+        .jade-months {
             width: 100%;
             display: none;
             padding: 0 3px 0 3px;
             text-align: center;
             }
-            .b-datepicker-months__row {}
-                .b-datepicker-months__item {
+            .jade-months__row {}
+                .jade-months__item {
                     border: 1px solid #aaaaaa;
                     cursor: pointer;
                     font-size: 12px;
                     padding: 7px 0 7px 0;
                     }
-                .b-datepicker-months__item:hover {}
-                .b-datepicker-months__item_selected {
+                .jade-months__item:hover {}
+                .jade-months__item_selected {
                     font-size: 12px;
                     }
 
         /* Таблица с выбором года */
-        .b-datepicker-years {
+        .jade-years {
             width: 100%;
             display: none;
             padding: 0 3px 0 3px;
             text-align: center;
             }
-            .b-datepicker-years__row {}
-                .b-datepicker-years__item {
+            .jade-years__row {}
+                .jade-years__item {
                     border: 1px solid #aaaaaa;
                     cursor: pointer;
                     font-size: 12px;
                     padding: 7px 0 7px 0;
                     }
-                .b-datepicker-years__item:hover {}
-                .b-datepicker-years__item_selected {
+                .jade-years__item:hover {}
+                .jade-years__item_selected {
                     font-size: 12px;
                     }

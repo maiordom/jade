@@ -1,12 +1,7 @@
-/**
- * @lends Jade.DatePickerWidget.prototype
- */
-Jade.DatePicker =
-{
+Jade.DatePicker = {
     setVars: function( settings )
     {
-        $.extend( this,
-        {
+        $.extend( this, {
             init_daypicker:   true,
             init_monthpicker: true,
             init_yearpicker:  true,
@@ -29,11 +24,10 @@ Jade.DatePicker =
         this.date_format = this.date_format_patterns[ this.region_name ];
     },
 
-    renderWrapper: function( date_field )
-    {
-        var parent   = $( "<div class='b-datepicker'>" ).append( this.tmpl ),
-            icon     = $( "<div class='b-datepicker__icon'>" ),
-            calendar = parent.find( ".b-datepicker__calendar" );
+    renderWrapper: function( date_field ) {
+        var parent   = $( "<div class='jade'>" ).append( this.tmpl ),
+            icon     = $( "<div class='jade__icon'>" ),
+            calendar = parent.find( ".jade__calendar" );
 
         parent.insertBefore( date_field ).append( date_field, icon  ).width( date_field.outerWidth() + 17 );
         calendar.css( "top", parent.outerHeight() );
@@ -42,26 +36,23 @@ Jade.DatePicker =
         return { parent: parent, icon: icon, calendar: calendar, date_field: date_field };
     },
 
-    cacheNodes: function( date_field, wrapper_obj )
-    {
+    cacheNodes: function( date_field, wrapper_obj ) {
         var calendar = wrapper_obj.calendar;
 
-        this.nodes =
-        {
-            month_curr:  calendar.find( ".b-datepicker-nav__month" ),
-            year_curr:   calendar.find( ".b-datepicker-nav__year" ),
-            dates_names: calendar.find( ".b-datepicker-dates__names-row th" ),
-            dates_items: calendar.find( ".b-datepicker-dates__items-row td" ),
-            dates_table: calendar.find( ".b-datepicker-dates" ),
-            today:       calendar.find( ".b-datepicker-today" ),
-            today_btn:   calendar.find( ".b-datepicker-today__btn" )
+        this.nodes = {
+            month_curr:  calendar.find( ".jade-nav__month" ),
+            year_curr:   calendar.find( ".jade-nav__year" ),
+            dates_names: calendar.find( ".jade-dates__names-row th" ),
+            dates_items: calendar.find( ".jade-dates__items-row td" ),
+            dates_table: calendar.find( ".jade-dates" ),
+            today:       calendar.find( ".jade-today" ),
+            today_btn:   calendar.find( ".jade-today__btn" )
         };
 
         $.extend( this.nodes, wrapper_obj );
     },
 
-    initDaysPicker: function()
-    {
+    initDaysPicker: function() {
         this.setDayNames();
         this.setCalendarState( "dates" );
 
@@ -77,101 +68,82 @@ Jade.DatePicker =
         this.nodes.date_field.val( this.date_value );
     },
 
-    bindDayPickerEvents: function()
-    {
+    bindDayPickerEvents: function() {
         var self = this;
 
         this.nodes.parent.delegate( this._nav_left,  "mousedown", function() { return false; } );
-        this.nodes.parent.delegate( this._nav_right, "mousedown", function() { return false; } ) ;
+        this.nodes.parent.delegate( this._nav_right, "mousedown", function() { return false; } );
 
-        this.nodes.today_btn.click( function()
-        {
+        this.nodes.today_btn.click( function() {
             self.hide();
             self.selectDate( self.today, self.today.getDate() );
         });
 
-        this.nodes.icon.click( function()
-        {
+        this.nodes.icon.click( function() {
             self.nodes.calendar.is( ":visible" ) ? self.hide() : self.nodes.date_field.focus();
         });
 
         this.nodes.date_field[ this.keypress_event_name ]( function( e )
         {
-            switch( e.keyCode )
-            {
+            switch( e.keyCode ) {
                 case 27: { self.hide(); } break;
                 default: { self.setDateByString(); }
             }
         });
 
-        this.nodes.date_field.focus( function()
-        {
+        this.nodes.date_field.focus( function() {
             self.show();
         });
 
-        this.nodes.date_field.blur( function()
-        {
+        this.nodes.date_field.blur( function() {
             self.is_mouseleave ? self.hide() : null;
         });
 
-        this.nodes.calendar.delegate( "." + this._dates_item, "click", function()
-        {
+        this.nodes.calendar.delegate( "." + this._dates_item, "click", function() {
             self.hide();
             self.selectDate( self.first_date, $( this ).text() );
         });
 
-        this.nodes.calendar.delegate( "." + this._dates_item_selected, "click", function()
-        {
+        this.nodes.calendar.delegate( "." + this._dates_item_selected, "click", function() {
             self.hide();
         });
 
-        this.nodes.parent.delegate( this._nav_left_by_dates, "click", function()
-        {
+        this.nodes.parent.delegate( this._nav_left_by_dates, "click", function() {
             self.navigateByMonth( -1 );
         });
 
-        this.nodes.parent.delegate( this._nav_right_by_dates, "click", function()
-        {
+        this.nodes.parent.delegate( this._nav_right_by_dates, "click", function() {
             self.navigateByMonth( 1 );
         });
     },
 
     bindMouseMoveEvents: function( self )
     {
-        this.nodes.parent.mouseleave( function( e )
-        {
+        this.nodes.parent.mouseleave( function( e ) {
             self.is_mouseleave = true;
             self.nodes.date_field.focus();
         });
 
-        this.nodes.parent.mouseenter( function( e )
-        {
+        this.nodes.parent.mouseenter( function( e ) {
             self.is_mouseleave = false;
         });
     },
 
-    offMouseMoveEvents: function()
-    {
+    offMouseMoveEvents: function() {
         this.nodes.parent.off( "mouseleave mouseenter" );
     },
 
-    setDateByString: function()
-    {
+    setDateByString: function() {
         var date_value = this.nodes.date_field.val(), date;
 
-        if ( this.nodes.date_field.val() !== this.date_value )
-        {
-            try
-            {
+        if ( this.nodes.date_field.val() !== this.date_value ) {
+            try {
                 date = this.parseDate( this.date_format, date_value );
-            }
-            catch( e )
-            {
+            } catch( e ) {
                 console.log( e );
             }
 
-            if ( date )
-            {
+            if ( date ) {
                 this.setMonthInterval( date );
                 this.setSelectedDate( date.getDate() );
                 this.updateDates();
@@ -179,15 +151,13 @@ Jade.DatePicker =
         }
     },
 
-    navigateByMonth: function( offset )
-    {
+    navigateByMonth: function( offset ) {
         this.setMonthByOffset( offset );
         this.updateDates();
         this.nodes.date_field.focus();
     },
 
-    selectDate: function( date, date_number )
-    {
+    selectDate: function( date, date_number ) {
         this.setMonthInterval( date );
         this.setSelectedDate( date_number );
         this.updateDates();
@@ -195,10 +165,8 @@ Jade.DatePicker =
         this.nodes.date_field.val( this.date_value );
     },
 
-    tryToDisplaySelectedDate: function()
-    {
-        if ( this.isDisplaySelectedDate() )
-        {
+    tryToDisplaySelectedDate: function() {
+        if ( this.isDisplaySelectedDate() ) {
             this.nodes.calendar
                 .find( "." + this._dates_item_selected )
                 .attr( "class", this._dates_item );
@@ -211,39 +179,30 @@ Jade.DatePicker =
 
     setDayNames: function()
     {
-        for ( var i = 0; i < 7; i++ )
-        {
+        for ( var i = 0; i < 7; i++ ) {
             this.nodes.dates_names.eq( i )
                 .text( this.region.day_names_short[ i ] )
                 .attr( "title", this.region.day_names[ i ] );
         }
     },
 
-    updateDates: function()
-    {
+    updateDates: function() {
         this.updateDateTitle();
         this.setDatesByMonth();
         this.tryToDisplaySelectedDate();
     },
 
-    setDatesByMonth: function()
-    {
+    setDatesByMonth: function() {
         var date, cl, last_date = this.last_date.getDate();
 
-        for ( var i = 0; i < 42; i++ )
-        {
-            if ( i <= this.prev_offset )
-            {
+        for ( var i = 0; i < 42; i++ ) {
+            if ( i <= this.prev_offset ) {
                 date = this.prev_last_date - this.prev_offset + i;
                 cl   = this._dates_item_blocked;
-            }
-            else if ( ( i > this.prev_offset && i <= ( this.prev_offset + last_date ) ) )
-            {
+            } else if ( ( i > this.prev_offset && i <= ( this.prev_offset + last_date ) ) ) {
                 date = i - this.prev_offset;
                 cl   = this._dates_item;
-            }
-            else
-            {
+            } else {
                 date = i - last_date - this.prev_offset;
                 cl   = this._dates_item_blocked;;
             }
@@ -258,12 +217,9 @@ Jade.DatePicker =
         this.state = state;
     },
 
-    show: function()
-    {
-        if ( this.nodes.calendar.is( ":hidden" ) )
-        {
-            if ( !this.isDisplaySelectedDate() )
-            {
+    show: function() {
+        if ( this.nodes.calendar.is( ":hidden" ) ) {
+            if ( !this.isDisplaySelectedDate() ) {
                 this.selectDate( this.selected_date, this.selected_date.getDate() );
             }
 
@@ -275,14 +231,12 @@ Jade.DatePicker =
         }
     },
 
-    hide: function()
-    {
+    hide: function() {
         this.offMouseMoveEvents();
         this.nodes.calendar.fadeOut( 200 );
     },
 
-    updateDateTitle: function()
-    {
+    updateDateTitle: function() {
         this.nodes.month_curr.text( this.region.month_names[ this.first_date.getMonth() ] );
         this.nodes.year_curr.text( this.first_date.getFullYear() );
     }
