@@ -68,8 +68,8 @@
 
     $( document ).ready( function() {
         var inputs = $( "input" );
-        inputs.eq( 0 ).jade();
-        inputs.eq( 1 ).jade( { region_name: "ru" } );
+        inputs.eq( 0 ).jade( { format: "dd MM yy" } );
+        inputs.eq( 1 ).jade( { format: "dd MM yy", region_name: "ru" } );
         inputs.eq( 2 ).jade( { init_monthpicker: false } );
         inputs.eq( 3 ).jade( { init_yearpicker: false } );
     });

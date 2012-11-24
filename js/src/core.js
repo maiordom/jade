@@ -67,7 +67,33 @@ Jade.Core = {
             year    = -1,
             month   = -1,
             day     = -1,
-            literal = false, lookAhead, getNumber, checkLiteral;
+            literal = false, lookAhead, getNumber, getName, checkLiteral;
+
+        getName = function( match, short_names, long_names ) {
+            var names = lookAhead( match ) ? long_names : short_names;
+
+            names = $.map( names, function ( v, k ) {
+                return [ [ k, v ] ];
+            }).sort( function ( a, b ) {
+                return - ( a[ 1 ].length - b[ 1 ].length );
+            });
+
+            var index = -1;
+
+            $.each( names, function ( i, pair ) {
+                var name = pair[ 1 ];
+                if ( value.substr( i_value, name.length ).toLowerCase() === name.toLowerCase() ) {
+                    index = pair[ 0 ];
+                    i_value += name.length;
+                    return false;
+                }
+            });
+
+            if ( index !== -1 )
+                return index + 1;
+            else
+                throw "Unknown name at position " + i_value;
+        };
 
         lookAhead = function( match ) {
             var matches = ( i + 1 < format.length && format.charAt( i + 1 ) === match );
@@ -103,6 +129,7 @@ Jade.Core = {
         for ( var i = 0; i < format.length; i++ ) {
             switch ( format.charAt( i ) ) {
                 case "d": day   = getNumber( "d" ); break;
+                case "M": month = getName( "M", month_names_short, month_names ); break
                 case "m": month = getNumber( "m" ); break;
                 case "y": year  = getNumber( "y" ); break;
                 default: checkLiteral();
@@ -137,7 +164,7 @@ Jade.Core = {
             day_names         = region.day_names,
             month_names_short = region.month_names_short,
             month_names       = region.month_names,
-            output = "", lookAhead, formatNumber, getYear;
+            output = "", lookAhead, formatNumber, getYear, formatName;
 
         lookAhead = function( match ) {
             var matches = ( index + 1 < format.length && format.charAt( index + 1 ) === match );
@@ -147,6 +174,10 @@ Jade.Core = {
             }
 
             return matches;
+        };
+
+        formatName = function( match, value, short_names, long_names ) {
+            return ( lookAhead( match ) ? long_names[ value ] : short_names[ value ] );
         };
 
         formatNumber = function( match, value, len )
@@ -173,6 +204,7 @@ Jade.Core = {
             switch ( format.charAt( index ) ) {
                 case "d": output += formatNumber( "d", date.getDate(), 2 ); break;
                 case "m": output += formatNumber( "m", date.getMonth() + 1, 2 ); break;
+                case "M": output += formatName( "M", date.getMonth(), month_names_short, month_names ); break;
                 case "y": output += getYear(); break;
                 default:  output += format.charAt( index );
             }

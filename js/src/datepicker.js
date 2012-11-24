@@ -24,7 +24,7 @@ Jade.DatePicker = {
 
         this.region_name ? null : this.region_name = this.default_region_name;
         this.region = this.regions[ this.region_name ];
-        this.date_format = this.date_format_patterns[ this.region_name ];
+        this.date_format = settings.format ? settings.format : this.date_format_patterns[ this.region_name ];
     },
 
     renderWrapper: function( date_field ) {
