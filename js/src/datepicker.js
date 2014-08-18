@@ -2,8 +2,7 @@ Jade.DatePicker = {
 
     onSelectDate: function() {},
 
-    setVars: function( settings )
-    {
+    setVars: function( settings ) {
         $.extend( this, {
             init_daypicker:   true,
             init_monthpicker: true,
@@ -86,8 +85,7 @@ Jade.DatePicker = {
             self.nodes.calendar.is( ":visible" ) ? self.hide() : self.nodes.date_field.focus();
         });
 
-        this.nodes.date_field[ this.keypress_event_name ]( function( e )
-        {
+        this.nodes.date_field[ this.keypress_event_name ]( function( e ) {
             switch( e.keyCode ) {
                 case 27: { self.hide(); } break;
                 default: { self.setDateByString(); }
@@ -120,8 +118,7 @@ Jade.DatePicker = {
         });
     },
 
-    bindMouseMoveEvents: function( self )
-    {
+    bindMouseMoveEvents: function( self ) {
         this.nodes.parent.mouseleave( function( e ) {
             self.is_mouseleave = true;
             self.nodes.date_field.focus();
@@ -181,8 +178,7 @@ Jade.DatePicker = {
         }
     },
 
-    setDayNames: function()
-    {
+    setDayNames: function() {
         for ( var i = 0; i < 7; i++ ) {
             this.nodes.dates_names.eq( i )
                 .text( this.region.day_names_short[ i ] )
@@ -208,15 +204,14 @@ Jade.DatePicker = {
                 cl   = this._dates_item;
             } else {
                 date = i - last_date - this.prev_offset;
-                cl   = this._dates_item_blocked;;
+                cl   = this._dates_item_blocked;
             }
 
             this.nodes.dates_items.eq( i ).text( date ).attr( "class", cl );
         }
     },
 
-    setCalendarState: function( state )
-    {
+    setCalendarState: function( state ) {
         this.nodes.calendar.attr( "class", this._calendar + " " + this._calendar + "_" + state );
         this.state = state;
     },

@@ -1,5 +1,4 @@
-(function( global, $ )
-{
+(function( global, $ ) {
 global.Jade = {
     Instances: []
 };
@@ -82,7 +81,7 @@ Jade.Core = {
 
             var index = -1;
 
-            $.each( names, function ( i, pair ) {
+            $.each( names, function( i, pair ) {
                 var name = pair[ 1 ];
                 if ( value.substr( i_value, name.length ).toLowerCase() === name.toLowerCase() ) {
                     index = pair[ 0 ];
@@ -131,7 +130,7 @@ Jade.Core = {
         for ( var i = 0; i < format.length; i++ ) {
             switch ( format.charAt( i ) ) {
                 case "d": day   = getNumber( "d" ); break;
-                case "M": month = getName( "M", month_names_short, month_names ); break
+                case "M": month = getName( "M", month_names_short, month_names ); break;
                 case "m": month = getNumber( "m" ); break;
                 case "y": year  = getNumber( "y" ); break;
                 default: checkLiteral();
@@ -159,8 +158,7 @@ Jade.Core = {
         return date;
     },
 
-    formatDate: function ( format, date )
-    {
+    formatDate: function ( format, date ) {
         var region            = this.region,
             day_names_short   = region.day_names_short,
             day_names         = region.day_names,
@@ -182,8 +180,7 @@ Jade.Core = {
             return ( lookAhead( match ) ? long_names[ value ] : short_names[ value ] );
         };
 
-        formatNumber = function( match, value, len )
-        {
+        formatNumber = function( match, value, len ) {
             var num = "" + value;
 
             if ( lookAhead( match ) ) {
@@ -195,12 +192,11 @@ Jade.Core = {
             return num;
         };
 
-        getYear = function()
-        {
+        getYear = function() {
             return lookAhead( "y" ) ?
                 date.getFullYear() :
                 ( date.getYear() % 100 < 10 ? "0" : "" ) + date.getYear() % 100;
-        }
+        };
 
         for ( var index = 0; index < format.length; index++ ) {
             switch ( format.charAt( index ) ) {
@@ -538,7 +534,7 @@ Jade.DatePicker = {
                 cl   = this._dates_item;
             } else {
                 date = i - last_date - this.prev_offset;
-                cl   = this._dates_item_blocked;;
+                cl   = this._dates_item_blocked;
             }
 
             this.nodes.dates_items.eq( i ).text( date ).attr( "class", cl );
